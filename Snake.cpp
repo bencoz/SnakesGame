@@ -47,7 +47,7 @@ void Snake::move()
 }
 int Snake::getDirection(char key)
 {
-	for (int i = 0; i < size - 1; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if (key == arrowKeys[i])
 			return i;
