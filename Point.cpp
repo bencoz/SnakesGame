@@ -7,25 +7,25 @@ void Point::move() {
 
 void Point::move(int dir) {
 	switch (dir) {
-	case 0: // UP
+	case UP:
 		--y;
-		if (y < 1) {
+		if (y < 4) {  //because 4 upper rows are for menu !
 			y = 24;
 		}
 		break;
-	case 1: // DOWN
+	case DOWN:
 		++y;
 		if (y > 24) {
 			y = 1;
 		}
 		break;
-	case 2: // LEFT
+	case LEFT:
 		--x;
 		if (x < 1) {
 			x = 79;
 		}
 		break;
-	case 3: // RIGHT
+	case RIGHT:
 		++x;
 		if (x > 79) {
 			x = 1;

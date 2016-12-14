@@ -1,7 +1,7 @@
 #include "randNum.h"
 
 
-int randNum::setProp(){
+int randNum::setValbyProp(){
 	int num;
 	num = rand() % 10;
 	if (num < 3)
