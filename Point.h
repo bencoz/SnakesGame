@@ -5,6 +5,8 @@
 #include "io_utils.h"
 
 using namespace std;
+enum { UP=0, DOWN=1, LEFT=2, RIGHT=3 };
+
 
 class Point {
 	int x, y;
@@ -14,7 +16,7 @@ public:
 	int getX() const {
 		return x;
 	}
-	int getY() const {
+	int getY() const{
 		return y;
 	}
 	void set(int _x, int _y) {

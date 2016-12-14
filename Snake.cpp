@@ -2,18 +2,15 @@
 #include "TheSnakesGame.h"
 
 
-Snake::Snake(int size, const Point& position, Color c, int dir)
+Snake::Snake(int size, const Point& position, Color c, int dir, char symb)
 {
-	//color = c;
+	setSign(symb);
 	direction = dir;
 	setColor(c);
 	this->size = size;
 	body = new Point[size];
 	for (int i = 0; i < size; i++)
-	{
-		body[i].set(position.getX(), position.getY());
-		//body[i] = position;
-	}		
+		body[i] = position;	
 }
 
 Snake::Snake(const Snake& s)
@@ -38,12 +35,12 @@ void Snake::move()
 	for (int i = size - 1; i > 0; --i)
 		body[i] = body[i - 1];
 
-	if (theGame->isWall(body[0].next(direction)))
+	if (theGame->isNotFree(body[0].next(direction)))
 		direction = 4;
 
 	body[0].move(direction);
 	setTextColor(color);
-	body[0].draw('@');
+	body[0].draw(sign);
 }
 int Snake::getDirection(char key)
 {
@@ -53,4 +50,7 @@ int Snake::getDirection(char key)
 			return i;
 	}
 	return -1;
+}
+char Snake::getSign(){
+	return (sign);
 }
