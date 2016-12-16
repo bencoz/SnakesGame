@@ -1,14 +1,16 @@
 #include "TheSnakesGame.h"
 #include "randNum.h"
 
+int TheSnakesGame::randNumSize;
+unsigned int TheSnakesGame::clock;
+
 TheSnakesGame::TheSnakesGame()
 {
 	s = new Snake*[2];
 	s[0] = new Snake(3, Point(10, 9), Color::LIGHTGREEN);
 	s[1] = new Snake(3, Point(70, 9), Color::LIGHTBLUE, 2, '#');
 	randNumbers = new randNum*[60];
-	//s[1] = new Snake (*s[0]);
-	//*s[1] = *s[0];
+
 }
 TheSnakesGame::~TheSnakesGame()
 {
@@ -16,6 +18,15 @@ TheSnakesGame::~TheSnakesGame()
 	delete s[1];
 	delete[] s;
 }
+
+void TheSnakesGame::printClock(){
+	clock++;
+	gotoxy(66, 0);
+	setTextColor(WHITE);
+	cout << clock;
+	cout.flush();
+}
+
 
 void TheSnakesGame::setBoard(const char* boardToCopy[ROWS])
 {
@@ -56,7 +67,12 @@ bool TheSnakesGame::isNotFree(const Point& p)
 		return false;
 	else
 	{
-		/*if (isRandNum(board[p.getY()][p.getX()]){
+		/*for (int i = 0; i < randNumSize; i++)
+		{
+			if ((randNumbers[i]->getRandX() == p.getX()) && (randNumbers[i]->getRandY() == p.getY()))
+				return;
+		}
+		if (isRandNum(board[p.getY()][p.getX()]){
 			val = getValue(board[p.getY()][p.getX()]);
 			if (missionOK(val))
 				restart;
@@ -65,44 +81,51 @@ bool TheSnakesGame::isNotFree(const Point& p)
 	}
 }
 
+bool TheSnakesGame::printRandNum(randNum* rand) // to board and to console
+{
+	int i, num;
+	bool print = false;
+	for (i = 0; (i < 5) && (print == false); i++)
+	{
+		if (rand->isLocOk(rand->getRandX(), rand->getNumDig())){
+			print = true;
+			num = rand->getVal();
+			if (rand->getNumDig() >= 3){
+				board[rand->getRandY()][rand->getRandX()] = (num / 100);
+				board[rand->getRandY()][rand->getRandX() + 1] = (num / 10) % 10;
+				board[rand->getRandY()][rand->getRandX() + 2] = num % 10;
+			}
+			else if (rand->getNumDig() >= 2){
+				board[rand->getRandY()][rand->getRandX()] = (num / 10) % 10;
+				board[rand->getRandY()][rand->getRandX() + 1] = num % 10;
+			}
+			else
+				board[rand->getRandY()][rand->getRandX()] = num;
+			rand->draw();
+		}
+	}
+	if (print)
+		return true;
+	else
+		return false;
+}
+
+
 void TheSnakesGame::run()
 {
 	char key = 0;
-	int dir,logSize=0, count = 0;
-	bool print;
-	int num;
+	int dir, count =0;
 	do
 	{
 		if (_kbhit())
 		{
-			count++;
-			gotoxy(66, 0);
-			setTextColor(WHITE);
-			cout << count;
-			cout.flush();
+			printClock();
 			if (count % 5 == 0){
-				randNumbers[logSize] = new randNum();
-				for (int i = 0, print = false; (i < 5) && (print == false); i++)
-				{
-					if (randNumbers[logSize]->isLocOk(randNumbers[logSize]->getRandX(), randNumbers[logSize]->getNumDig())){
-						print = true;
-						num = randNumbers[logSize]->getVal();
-						if (randNumbers[logSize]->getNumDig() >= 3){
-							board[randNumbers[logSize]->getRandY()][randNumbers[logSize]->getRandX()] = (num / 100);
-							board[randNumbers[logSize]->getRandY()][randNumbers[logSize]->getRandX() + 1] = (num / 10) % 10;
-							board[randNumbers[logSize]->getRandY()][randNumbers[logSize]->getRandX() + 2] = num % 10;
-						}
-						else if (randNumbers[logSize]->getNumDig() >= 2){
-							board[randNumbers[logSize]->getRandY()][randNumbers[logSize]->getRandX()] = (num / 10) % 10;
-							board[randNumbers[logSize]->getRandY()][randNumbers[logSize]->getRandX() + 1] = num % 10;
-						}
-						else
-							board[randNumbers[logSize]->getRandY()][randNumbers[logSize]->getRandX()] = num;
-						randNumbers[logSize]->draw();
-						logSize++;
-					}
-				}
+				randNumbers[randNumSize] = new randNum();
+				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
+					randNumSize++;
 			}
+			count++;
 			key = _getch();
 			if ((dir = s[0]->getDirection(key)) != -1)
 				s[0]->setDirection(dir);
