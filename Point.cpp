@@ -16,19 +16,19 @@ void Point::move(int dir) {
 	case DOWN:
 		++y;
 		if (y > 24) {
-			y = 1;
+			y = 4;
 		}
 		break;
 	case LEFT:
 		--x;
-		if (x < 1) {
+		if (x < 0) {
 			x = 79;
 		}
 		break;
 	case RIGHT:
 		++x;
 		if (x > 79) {
-			x = 1;
+			x = 0;
 		}
 		break;
 	}
