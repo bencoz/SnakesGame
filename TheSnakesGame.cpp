@@ -64,57 +64,63 @@ void TheSnakesGame::init()
 
 bool TheSnakesGame::isNotFree(const Point& p)
 {
-	int val;
 	if (board[p.getY()][p.getX()] == ' ')
 		return false;
 	else
-	{
-		/*for (int i = 0; i < randNumSize; i++)
-		{
-			if ((randNumbers[i]->getRandX() == p.getX()) && (randNumbers[i]->getRandY() == p.getY()))
-				return;
-		}
-		if (isRandNum(board[p.getY()][p.getX()]){
-			val = getValue(board[p.getY()][p.getX()]);
-			if (missionOK(val))
-				restart;
-		}*/
 		return true;
-	}
 }
 
-bool TheSnakesGame::printRandNum(randNum* rand) // to board and to console
-{
-	int i, num;
-	bool print = false;
-	for (i = 0; (i < 5) && (print == false); i++)
+randNum* TheSnakesGame::isRandNum(const Point& p) {
+	int randNumX, randNumY;
+	bool found = false;
+	randNum* res;
+	for (int i = 0; i < randNumSize && !found; i++)
 	{
-		if (rand->isLocOk(rand->getRandX(), rand->getNumDig())){
-			print = true;
-			num = rand->getVal();
-			if (rand->getNumDig() >= 3){
-				board[rand->getRandY()][rand->getRandX()] = (num / 100);
-				board[rand->getRandY()][rand->getRandX() + 1] = (num / 10) % 10;
-				board[rand->getRandY()][rand->getRandX() + 2] = num % 10;
+		randNumX = randNumbers[i]->getRandX();
+		randNumY = randNumbers[i]->getRandY();
+		for (int j = -1; j < 3; j++) {
+			if ((randNumX + j == p.getX()) && (randNumY == p.getY())) {// number is right on spot
+				found = true;
+				res = randNumbers[i];
 			}
-			else if (rand->getNumDig() >= 2){
-				board[rand->getRandY()][rand->getRandX()] = (num / 10) % 10;
-				board[rand->getRandY()][rand->getRandX() + 1] = num % 10;
-			}
-			else
-				board[rand->getRandY()][rand->getRandX()] = num;
-			rand->draw();
 		}
 	}
-	if (print)
-		return true;
+	if (found)
+		return res;
 	else
-		return false;
+		return nullptr;
 }
 
+
+bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console | if fails return false
+{
+	int num, digNum, i;
+	num = rand->getVal();
+	digNum = rand->getNumDig();
+
+	for (i = 0; i < digNum; i++) {//check if there is something on board
+		if (board[rand->getRandY()][rand->getRandX() + i] != ' ')
+			return false;
+	}
+
+	if (digNum >= 3) {
+		board[rand->getRandY()][rand->getRandX()] = (num / 100);
+		board[rand->getRandY()][rand->getRandX() + 1] = (num / 10) % 10;
+		board[rand->getRandY()][rand->getRandX() + 2] = num % 10;
+	}
+	else if (digNum >= 2) {
+		board[rand->getRandY()][rand->getRandX()] = (num / 10) % 10;
+		board[rand->getRandY()][rand->getRandX() + 1] = num % 10;
+	}
+	else
+		board[rand->getRandY()][rand->getRandX()] = num;
+	rand->draw();
+	return true;
+}
 
 void TheSnakesGame::run()
 {
+	randNum* CurrNum;
 	char key = 0;
 	int dir, count =0;
 	do
@@ -123,9 +129,11 @@ void TheSnakesGame::run()
 		{
 			printClock();
 			if (count % 5 == 0) {
-				randNumbers[randNumSize] = new randNum();
+				randNumbers[randNumSize] = new randNum(this);
 				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
 					randNumSize++;
+				else
+					delete randNumbers[randNumSize];
 			}
 			count++;
 			key = _getch();
@@ -134,8 +142,8 @@ void TheSnakesGame::run()
 			else if ((dir = s[1]->getDirection(key)) != -1)
 				s[1]->setDirection(dir);
 		}
-		s[0]->move();
-		s[1]->move();
+		CurrNum = s[0]->move();
+		CurrNum = s[1]->move();
 		Sleep(200);
 		if (key == ESC) {
 			switch (screen->Pause_Screen()) {
@@ -146,7 +154,8 @@ void TheSnakesGame::run()
 				//go to start menu
 				screen->Begin_Screen();
 				break;
-			case(3) :
+			case(3) : 
+				TheSnakesGame::init();
 				TheSnakesGame::run();
 				break;
 			case(4) :

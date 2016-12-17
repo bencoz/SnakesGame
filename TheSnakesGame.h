@@ -15,8 +15,8 @@ class Screen;
 class TheSnakesGame {
 	enum {ESC = 27};
 	Screen *screen;
-	Snake** s;
 	Mission *mission;
+	Snake** s;
 	randNum** randNumbers;
 	static int randNumSize;
 	char originalBoard[ROWS][COLS + 1];	// this is the original board that we got (we need COLS+1 because we handle it as null terminated char*)
@@ -42,6 +42,7 @@ public:
 	void restartClock(){
 		clock = 0;
 	}
+	randNum* isRandNum(const Point& p);
 };
 
 #endif
