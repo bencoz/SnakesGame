@@ -29,17 +29,23 @@ void Snake::setPosition(int y, int x)
 	for (int i = 0; i < size; i++)
 		body[i].set(x, y);
 }*/
-void Snake::move()
+	randNum* Snake::move()
 {
+	randNum* res = nullptr;
 	body[size - 1].draw(' ');
 	for (int i = size - 1; i > 0; --i)
 		body[i] = body[i - 1];
 
-	if (theGame->isNotFree(body[0].next(direction)))
-		direction = 4;
+	if (theGame->isNotFree(body[0].next(direction))){
+		res = theGame->isRandNum(body[0].next(direction));
+		if (res == nullptr) //not a rand number -> its a wal;.
+			direction = 4;
+	}
+
 	body[0].move(direction);
 	setTextColor(color);
 	body[0].draw(sign);
+	return res;
 }
 int Snake::getDirection(char key)
 {
