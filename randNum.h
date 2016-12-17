@@ -14,17 +14,8 @@ class randNum{
 	Point loc;
 	TheSnakesGame* thegame;
 public:
-	randNum() {
-		val = setValbyProp();
-		if (val >= 100)
-			numOfDig = 3;
-		else if (val >= 10)
-			numOfDig = 2;
-		loc.set((rand() % 80), (rand() % 18) + 5);
-		/*setTextColor(WHITE);
-		if (isLocOk(loc.getX(), numOfDig))
-			loc.draw(val);*/
-	}
+	randNum(TheSnakesGame* _theGame = nullptr);
+	~randNum();
 	int setValbyProp();
 	int getRandX() const {
 		return loc.getX();
@@ -38,16 +29,9 @@ public:
 	int getNumDig(){
 		return numOfDig;
 	}
-	void draw() {
-		setTextColor(WHITE);
-		gotoxy(loc.getX(), loc.getY());
-		cout << val;
-		cout.flush();
-	}
-	bool isLocOk(int, int numOfDig);
-	void setGame(TheSnakesGame* _theGame) {
-		thegame = _theGame;
-	}
+	void draw();
+	bool isLocOnScreenOk(const randNum*);
+	void setGame(TheSnakesGame* _theGame);
 };
 
 #endif

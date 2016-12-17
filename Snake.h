@@ -5,6 +5,8 @@
 #include "Point.h"
 
 class TheSnakesGame;
+class randNum;
+
 
 class Snake {
 	char sign;
@@ -19,7 +21,7 @@ public:
 	~Snake(){ delete[] body; } //d'tor
 	Snake(const Snake& s); //copy c'tor
 
-	void setGame(TheSnakesGame* _theGame) {
+	void setGame(TheSnakesGame* _theGame){
 		theGame = _theGame;
 	}
 	void setPosition(int y, int x);
@@ -35,7 +37,7 @@ public:
 	void setSign(char c) {
 		sign = c;
 	}
-	void move();
+	randNum* move();
 	int getDirection(char key);
 	void setDirection(int dir) {
 		direction = dir;
