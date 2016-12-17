@@ -73,7 +73,7 @@ bool TheSnakesGame::isNotFree(const Point& p)
 randNum* TheSnakesGame::isRandNum(const Point& p) {
 	int randNumX, randNumY;
 	bool found = false;
-	randNum* res;
+	randNum* res = nullptr;
 	for (int i = 0; i < randNumSize && !found; i++)
 	{
 		randNumX = randNumbers[i]->getRandX();
@@ -85,20 +85,36 @@ randNum* TheSnakesGame::isRandNum(const Point& p) {
 			}
 		}
 	}
-	if (found)
-		return res;
-	else
-		return nullptr;
+	return res;
 }
 
+void TheSnakesGame::swapRandNum(randNum** arr,int a, int b)
+{
+	randNum* temp;
+	temp = arr[a];
+	arr[a] = arr[b];
+	arr[b] = temp;
+}
+void TheSnakesGame::deleteHalfofRandNum(randNum** arr)
+{
+	int del,size = randNumSize/2;
+	for (int i = 0; i < size; i++, randNumSize--)
+	{
+		del = rand() % randNumSize;
+		swapRandNum(arr, randNumSize-1, del);
+		randNumbers[randNumSize-1]->~randNum();
+		delete randNumbers[randNumSize-1];
 
+	}
+}
 bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console | if fails return false
 {
 	int num, digNum, i;
 	num = rand->getVal();
 	digNum = rand->getNumDig();
 
-	for (i = 0; i < digNum; i++) {//check if there is something on board
+	for (i = -1; i < digNum+1; i++) //check if there is something(snake/randNum) close (to the left or to the right) on board
+	{     
 		if (board[rand->getRandY()][rand->getRandX() + i] != ' ')
 			return false;
 	}
@@ -118,6 +134,32 @@ bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console 
 	return true;
 }
 
+void TheSnakesGame::printSnakeOnBoard(int x, int y, char ch)
+{
+		board[y][x] = ch;
+}
+void TheSnakesGame::deleteNumFromBoard(int x, int y, int len){
+	for (int i = 0; i < len; i++)
+		board[y][x+i] = ' ';
+}
+
+void TheSnakesGame::lookForAns(randNum** arr)
+{
+	bool found = false;
+	for (int i = 0; i < randNumSize; i++)
+	{
+		if (mission->isMissionOK(mission->getMissionNum(), arr[i]->getVal()))
+		{
+			found = true;
+			arr[i]->flicker();
+		}
+	}
+	if (!found){
+		gotoxy(3, 0);
+		cout << "Nice effort but, No solution on screen";
+	}
+}
+
 void TheSnakesGame::run()
 {
 	randNum* CurrNum;
@@ -128,7 +170,7 @@ void TheSnakesGame::run()
 		if (_kbhit())
 		{
 			printClock();
-			if (count % 5 == 0) {
+			if (count % 1 == 0) {
 				randNumbers[randNumSize] = new randNum(this);
 				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
 					randNumSize++;
@@ -142,8 +184,15 @@ void TheSnakesGame::run()
 			else if ((dir = s[1]->getDirection(key)) != -1)
 				s[1]->setDirection(dir);
 		}
+		//deleteHalfofRandNum(randNumbers);
+		if (randNumSize == 60)
+			lookForAns(randNumbers);
 		CurrNum = s[0]->move();
+		/*if (CurrNum != nullptr)
+			CurrNum->~randNum();*/
 		CurrNum = s[1]->move();
+		/*if (CurrNum != nullptr)
+			CurrNum->~randNum();*/
 		Sleep(200);
 		if (key == ESC) {
 			switch (screen->Pause_Screen()) {
