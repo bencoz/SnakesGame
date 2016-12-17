@@ -6,6 +6,7 @@ using namespace std;
 #include "_board.h"
 
 int main() {
+	hideCursor();
 	TheSnakesGame game;
 	game.setBoard(start_board);
 	game.init();
