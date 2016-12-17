@@ -3,12 +3,20 @@
 
 #include "io_utils.h"
 #include "Snake.h"
+#include "Screen.h"
+#include "mission.h"
+
+
 class randNum;
 enum { ROWS = 24, COLS = 80 };
+class Mission;
+class Screen;
 
 class TheSnakesGame {
 	enum {ESC = 27};
+	Screen *screen;
 	Snake** s;
+	Mission *mission;
 	randNum** randNumbers;
 	static int randNumSize;
 	char originalBoard[ROWS][COLS + 1];	// this is the original board that we got (we need COLS+1 because we handle it as null terminated char*)

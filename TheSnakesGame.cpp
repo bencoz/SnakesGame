@@ -10,8 +10,10 @@ TheSnakesGame::TheSnakesGame()
 	s[0] = new Snake(3, Point(10, 9), Color::LIGHTGREEN);
 	s[1] = new Snake(3, Point(70, 9), Color::LIGHTBLUE, 2, '#');
 	randNumbers = new randNum*[60];
-
+	screen = new Screen;
+	mission = new Mission;
 }
+
 TheSnakesGame::~TheSnakesGame()
 {
 	delete s[0];
@@ -120,7 +122,7 @@ void TheSnakesGame::run()
 		if (_kbhit())
 		{
 			printClock();
-			if (count % 5 == 0){
+			if (count % 5 == 0) {
 				randNumbers[randNumSize] = new randNum();
 				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
 					randNumSize++;
@@ -135,5 +137,32 @@ void TheSnakesGame::run()
 		s[0]->move();
 		s[1]->move();
 		Sleep(200);
+		if (key == ESC) {
+			switch (screen->Pause_Screen()) {
+			case(1) :
+				//exit the prog
+				break;
+			case(2) :
+				//go to start menu
+				screen->Begin_Screen();
+				break;
+			case(3) :
+				TheSnakesGame::run();
+				break;
+			case(4) :
+				//restart current mission
+
+				break;
+			case(5) :
+				//start new mission
+
+				mission = new Mission(mission->getMissionNum());
+				key = 0;
+				break;
+			case(6) :
+				//restart game
+				break;
+			}//switch
+		}//if
 	} while (key != ESC);
 }

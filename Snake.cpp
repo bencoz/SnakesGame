@@ -37,7 +37,6 @@ void Snake::move()
 
 	if (theGame->isNotFree(body[0].next(direction)))
 		direction = 4;
-
 	body[0].move(direction);
 	setTextColor(color);
 	body[0].draw(sign);
