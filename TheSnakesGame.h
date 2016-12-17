@@ -1,6 +1,7 @@
 #ifndef _THESNAKESGAME_H_
 #define _THESNAKESGAME_H_
 
+#define _CRT_SECURE_NO_WARNINGS
 #include "io_utils.h"
 #include "Snake.h"
 #include "Screen.h"
@@ -9,11 +10,11 @@
 
 class randNum;
 enum { ROWS = 24, COLS = 80 };
+enum { ESC = 27 };
 class Mission;
 class Screen;
 
 class TheSnakesGame {
-	enum {ESC = 27};
 	Screen *screen;
 	Mission *mission;
 	Snake** s;
@@ -38,11 +39,6 @@ public:
 	void init();
 	void run();
 	bool printRandNum(randNum* s);
-	void deleteNumFromBoard(int x, int y, int len);
-	void printSnakeOnBoard(int x, int y, char ch);
-	void deleteHalfofRandNum(randNum**);
-	void lookForAns(randNum**);
-	void swapRandNum(randNum** arr, int a, int b);
 	void printClock();
 	void restartClock(){
 		clock = 0;
