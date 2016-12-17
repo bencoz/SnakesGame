@@ -44,6 +44,8 @@ public:
 	void deleteHalfofRandNum(randNum**);
 	void lookForAns(randNum**);
 	void swapRandNum(randNum** arr, int a, int b);
+	void TheSnakesGame::AfterMissionBoard();
+	void TheSnakesGame::clearHalfRow();
 	void printClock();
 	void restartClock(){
 		clock = 0;

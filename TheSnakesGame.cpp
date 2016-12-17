@@ -29,6 +29,31 @@ void TheSnakesGame::printClock(){
 	cout.flush();
 }
 
+void TheSnakesGame::clearHalfRow() {
+	gotoxy(0, 0);
+	for (int i = 0; i < COLS / 2; i++)
+	{
+		cout << " ";
+		board[0][i] = ' ';
+	}
+}
+void TheSnakesGame::AfterMissionBoard() {
+	char *missionName;
+	missionName = new char[ROWS];
+	missionName = mission->missionName(mission->getMissionNum());
+	clearHalfRow();
+	for (int i = 0; i < strlen(missionName); i++)
+		board[0][i] = missionName[i];
+	gotoxy(0, 0);
+	cout << board[0];
+	cout.flush();
+	s[0]->setPosition(10, 9);
+	s[1]->setPosition(70, 9);
+	s[0]->setDirection(3);
+	s[1]->setDirection(2);
+	s[0]->setGame(this);
+	s[1]->setGame(this);
+}
 
 void TheSnakesGame::setBoard(const char* boardToCopy[ROWS])
 {
@@ -54,7 +79,6 @@ void TheSnakesGame::init()
 			gotoxy(j, i);
 			cout << board[i][j];
 			cout.flush();
-			board[i][j] = board[i][j];
 		}
 		board[i][COLS] = '\0';
 	}
@@ -121,16 +145,16 @@ bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console 
 			return false;
 	}
 	if (digNum >= 3) {
-		board[rand->getRandY()][rand->getRandX()] = (num / 100);
-		board[rand->getRandY()][rand->getRandX() + 1] = (num / 10) % 10;
-		board[rand->getRandY()][rand->getRandX() + 2] = num % 10;
+		board[rand->getRandY()][rand->getRandX()] = (char)('0' + (num / 100));
+		board[rand->getRandY()][rand->getRandX() + 1] = (char)('0'+((num / 10) % 10));
+		board[rand->getRandY()][rand->getRandX() + 2] = (char)('0'+(num % 10));
 	}
 	else if (digNum >= 2) {
-		board[rand->getRandY()][rand->getRandX()] = (num / 10) % 10;
-		board[rand->getRandY()][rand->getRandX() + 1] = num % 10;
+		board[rand->getRandY()][rand->getRandX()] = (char)('0'+((num / 10) % 10));
+		board[rand->getRandY()][rand->getRandX() + 1] = (char)('0'+(num % 10));
 	}
 	else
-		board[rand->getRandY()][rand->getRandX()] = num;
+		board[rand->getRandY()][rand->getRandX()] = (char)('0'+num);
 	rand->draw();
 	return true;
 }
@@ -155,6 +179,7 @@ void TheSnakesGame::lookForAns(randNum** arr)
 	}
 	if (!found) {
 		gotoxy(3, 0);
+		setTextColor(LIGHTGREEN);
 		cout << "Nice effort but, No solution on screen";
 	}
 }
@@ -165,13 +190,13 @@ void TheSnakesGame::run()
 {
 	randNum* CurrNum;
 	char key = 0;
-	int dir, count =0;
+	int dir, lastMissionNum, count = 0;
 	do
 	{
 		if (_kbhit())
 		{
 			printClock();
-			if (count % 5 == 0) {
+			if (count % 2 == 0) {
 				randNumbers[randNumSize] = new randNum(this);
 				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
 					randNumSize++;
@@ -185,10 +210,55 @@ void TheSnakesGame::run()
 			else if ((dir = s[1]->getDirection(key)) != -1)
 				s[1]->setDirection(dir);
 		}
-		if (randNumSize == 60)
+		if (randNumSize == 60){
 			lookForAns(randNumbers);
+			lastMissionNum = mission->getMissionNum();
+			delete mission;
+			mission = new Mission(lastMissionNum);
+			deleteHalfofRandNum(randNumbers);
+		}
 		CurrNum = s[0]->move();
+		if (CurrNum != nullptr){
+			if (mission->isMissionOK(mission->getMissionNum(), CurrNum->getVal())){
+				lastMissionNum = mission->getMissionNum();
+				delete mission;
+				mission = new Mission(lastMissionNum);
+				deleteHalfofRandNum(randNumbers);
+				s[0]->changeSize(1);
+				AfterMissionBoard();
+				key = 0;
+			}
+			else{
+				lastMissionNum = mission->getMissionNum();
+				delete mission;
+				mission = new Mission(lastMissionNum);
+				deleteHalfofRandNum(randNumbers);
+				s[0]->changeSize(0);
+				AfterMissionBoard();
+				key = 0;
+			}
+		}
 		CurrNum = s[1]->move();
+		if (CurrNum != nullptr){
+			if (mission->isMissionOK(mission->getMissionNum(), CurrNum->getVal())){
+				lastMissionNum = mission->getMissionNum();
+				delete mission;
+				mission = new Mission(lastMissionNum);
+				deleteHalfofRandNum(randNumbers);
+				s[1]->changeSize(1);
+				AfterMissionBoard();
+				key = 0;
+			}
+			else{
+				lastMissionNum = mission->getMissionNum();
+				delete mission;
+				mission = new Mission(lastMissionNum);
+				deleteHalfofRandNum(randNumbers);
+				s[1]->changeSize(0);
+				AfterMissionBoard();
+				key = 0;
+			}
+		}
 		Sleep(200);
 		if (key == ESC) {
 			switch (screen->Pause_Screen()) {
@@ -202,7 +272,7 @@ void TheSnakesGame::run()
 					//show instructions
 					screen->Instructions_Screen();
 					init();
-					run();
+					key = 0;
 					break;
 				case(2) :
 					//start new game
@@ -210,23 +280,24 @@ void TheSnakesGame::run()
 				case(9) :
 					//Exit game
 					break;
-				}
-				//end of inner switch
+			}
+					//end of inner switch
 					break;
-				break;
-			case(3) : 
+					break;
+			case(3) :
 				//resume game
 				init();
-				run();
 				break;
 			case(4) :
 				//restart current mission
-
+				deleteHalfofRandNum(randNumbers);
+				key = 0;
 				break;
 			case(5) :
-				//start new mission
-
-				//mission = new Mission(mission->getMissionNum());
+				lastMissionNum = mission->getMissionNum();
+				delete mission;
+				mission = new Mission(lastMissionNum);
+				init();
 				key = 0;
 				break;
 			case(6) :

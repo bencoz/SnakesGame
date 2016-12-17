@@ -23,12 +23,12 @@ Snake::Snake(const Snake& s)
 		body[i] = s.body[i];
 	}
 }
-/*
-void Snake::setPosition(int y, int x)
+
+void Snake::setPosition(int x, int y)
 {
 	for (int i = 0; i < size; i++)
 		body[i].set(x, y);
-}*/
+}
 	randNum* Snake::move()
 	{
 	randNum* res = nullptr;

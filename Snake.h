@@ -24,7 +24,7 @@ public:
 	void setGame(TheSnakesGame* _theGame){
 		theGame = _theGame;
 	}
-	void setPosition(int y, int x);
+	void setPosition(int x, int y);
 	void setArrowKeys(const char* keys) {
 		arrowKeys[0] = keys[0];
 		arrowKeys[1] = keys[1];
@@ -43,6 +43,12 @@ public:
 		direction = dir;
 	}
 	char getSign();
+	void changeSize(int a){// positve for growth negative+zero for decrease.
+		if (a > 0)
+			size++;
+		else
+			size--;
+	}
 };
 
 #endif
