@@ -10,7 +10,7 @@ using namespace std;
 class TheSnakesGame;
 
 class Mission {
-	enum {PrimeNumber, DividedBy4, MultipleBy7, PowOf_Znum, RestIs3, Num169};
+	enum {Prime_Number, Divided_By_4, Multiple_By_7, Square_Of_Z_Num, Rest_Is_3, Square_Of_13};
 	TheSnakesGame * theGame;
 	int numOfMiss;
 public:
@@ -22,6 +22,7 @@ public:
 	int getMissionNum() {
 		return numOfMiss;
 	}
+	char* missionName(int missionNum);
 	BOOL isMissionOK(int missionNum, int num);
 	BOOL isM1(int num);
 	BOOL isM2(int num);

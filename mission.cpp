@@ -12,18 +12,36 @@ Mission::Mission(int num) {
 Mission::~Mission() {
 	
 }
+
+char *Mission::missionName(int missionNum) {
+	switch (missionNum) {
+	case(0) :
+		return "Prime_Number";
+	case(1) :
+		return "Divided_By_4";
+	case(2) :
+		return "Multiple_By_7";
+	case(3) :
+		return "Sqaure_Of_Z_Num";
+	case(4) :
+		return "Rest_Is_3";
+	case(5) :
+		return "Sqaure_Of_13";
+	}
+}
+
 BOOL Mission::isMissionOK(int missionNum, int num){
-	if (missionNum == PrimeNumber)
+	if (missionNum == Prime_Number)
 		return Mission::isM1(num);
-	else if (missionNum == DividedBy4)
+	else if (missionNum == Divided_By_4)
 		return Mission::isM2(num);
-	else if (missionNum == MultipleBy7)
+	else if (missionNum == Multiple_By_7)
 		return Mission::isM3(num);
-	else if (missionNum == PowOf_Znum)
+	else if (missionNum == Square_Of_Z_Num)
 		return Mission::isM4(num);
-	else if (missionNum == RestIs3)
+	else if (missionNum == Rest_Is_3)
 		return Mission::isM5(num);
-	else if (missionNum == Num169)
+	else if (missionNum == Square_Of_13)
 		return Mission::isM6(num);
 	else
 		return 0;
