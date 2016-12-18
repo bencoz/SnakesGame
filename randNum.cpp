@@ -40,7 +40,12 @@ void randNum::flicker() {
 		gotoxy(loc.getX(), loc.getY());
 		cout << val;
 		cout.flush();
-		Sleep(100);
+		Sleep(1000);
+		setTextColor(WHITE);
+		gotoxy(loc.getX(), loc.getY());
+		cout << val;
+		cout.flush();
+		Sleep(1000);
 	}
 }
 int randNum::setValbyProp(){

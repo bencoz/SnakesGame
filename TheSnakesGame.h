@@ -39,18 +39,27 @@ public:
 	void init();
 	void run();
 	bool printRandNum(randNum* s);
+	void printRandNumers(randNum** arr);
 	void deleteNumFromBoard(int x, int y, int len);
 	void printSnakeOnBoard(int x, int y, char ch);
 	void deleteHalfofRandNum(randNum**);
+	void printGoodJob();
+	void printNoTime();
+	void changeMission();
 	void lookForAns(randNum**);
 	void swapRandNum(randNum** arr, int a, int b);
-	void TheSnakesGame::AfterMissionBoard();
-	void TheSnakesGame::clearHalfRow();
+	void swapRandNum(randNum a, randNum b);
+	void AfterMissionBoard();
+	void clearHalfRow();
+	void clearConsoleAndBoard();
+	void clearBoardFromSnakes(char ch1, char ch2);
+	void printRelevant(char *MissionName, int player1, int player2);
 	void printClock();
 	void restartClock(){
 		clock = 0;
 	}
 	randNum* isRandNum(const Point& p);
+	bool isSnake(const Point& p);
 };
 
 #endif

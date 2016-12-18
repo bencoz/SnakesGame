@@ -29,19 +29,24 @@ void Snake::setPosition(int x, int y)
 	for (int i = 0; i < size; i++)
 		body[i].set(x, y);
 }
-	randNum* Snake::move()
-	{
+randNum* Snake::move(){
 	randNum* res = nullptr;
+
+
+	if (theGame->isNotFree(body[0].next(direction))){
+		res = theGame->isRandNum(body[0].next(direction));
+		if (res == nullptr)//not a rand number -> its a other snake.
+			direction = 4;
+	}
+	
+	if (direction != 4){
 	body[size - 1].draw(' ');
 	theGame->printSnakeOnBoard(body[size - 1].getX(), body[size - 1].getY(), ' ');
 	for (int i = size - 1; i > 0; --i)
 		body[i] = body[i - 1];
+	}
+	
 
-	if (theGame->isNotFree(body[0].next(direction))){
-		res = theGame->isRandNum(body[0].next(direction));
-		/*if (body[0].next(direction).getY() != 24)//not a rand number -> its a other snake.
-			direction = 4;*/
-		}
 	body[0].move(direction);
 	setTextColor(color);
 	body[0].draw(sign);
@@ -60,4 +65,7 @@ int Snake::getDirection(char key)
 }
 char Snake::getSign(){
 	return (sign);
+}
+int Snake::getSize(){
+	return (size);
 }
