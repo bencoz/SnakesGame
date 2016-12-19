@@ -45,6 +45,9 @@ public:
 	}
 	char getSign();
 	int getSize();
+	int setSize(int _size);
+	int nextPointY();
+	int nextPointX();
 	void changeSize(int a){// positve for growth negative+zero for decrease.
 		if (a > 0)
 			size++;

@@ -29,6 +29,17 @@ void Snake::setPosition(int x, int y)
 	for (int i = 0; i < size; i++)
 		body[i].set(x, y);
 }
+int Snake::nextPointY(){
+	Point p;
+	p = body[0].next(direction);
+	return (p.getY());
+}
+int Snake::nextPointX(){
+	Point p;
+	p = body[0].next(direction);
+	return (p.getX());
+}
+
 randNum* Snake::move(){
 	randNum* res = nullptr;
 
@@ -68,4 +79,7 @@ char Snake::getSign(){
 }
 int Snake::getSize(){
 	return (size);
+}
+int Snake::setSize(int _size){
+	size = _size;
 }

@@ -33,6 +33,7 @@ public:
 	void flicker();
 	bool isLocOnScreenOk(const randNum*);
 	void setGame(TheSnakesGame* _theGame);
+	Point& getPoint();
 };
 
 #endif
