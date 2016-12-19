@@ -29,7 +29,7 @@ public:
 	bool isNotFree(const Point& p);
 	void setBoard(const char* boardToCopy[ROWS]);
 	void init();
-	BOOL run();
+	void run();
 	bool printRandNum(randNum* s);
 	void deleteNumFromBoard(int x, int y, int len);
 	void printSnakeOnBoard(int x, int y, char ch);
@@ -39,7 +39,7 @@ public:
 	void TheSnakesGame::AfterMissionBoard();
 	void TheSnakesGame::clearHalfRow();
 	void printClock();
-	void TheSnakesGame::resetMembers();
+	void TheSnakesGame::resetSize();
 	void printRandNumers(randNum** arr);
 	void printGoodJob();
 	void printNoTime();
@@ -48,6 +48,9 @@ public:
 	void clearConsoleAndBoard();
 	void swapRandNum(randNum a, randNum b);
 	void printRelevant(char *MissionName, int player1, int player2);
+	char TheSnakesGame::BeginScreenSwitch();
+	char TheSnakesGame::PauseScreenSwitch();
+	void TheSnakesGame::resetPosAndDir();
 	void restartClock(){
 		clock = 0;
 	}

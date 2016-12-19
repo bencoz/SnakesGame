@@ -42,7 +42,7 @@ void Screen::Instructions_Screen() {
 	cout << "Press Esc to resume game" << endl << endl;
 	cout << "This is a game called Snake." << endl;
 	cout << "Its a 2 players game, Each player has a snake 3 signs size." << endl;
-	cout << "The Objective is to get your snake to 15 signs size." << endl;
+	cout << "The Objective is to get your snake to 12 signs size." << endl;
 	cout << "To do that you have to collect with your snake the correct numbers that appers on the screen." << endl;
 	cout << "The correct numbers depends on the missions. You have 6 different missions in the game" << endl;
 	cout << "The missions are:" << endl;
