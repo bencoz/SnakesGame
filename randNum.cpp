@@ -40,7 +40,12 @@ void randNum::flicker() {
 		gotoxy(loc.getX(), loc.getY());
 		cout << val;
 		cout.flush();
-		Sleep(100);
+		Sleep(1000);
+		setTextColor(WHITE);
+		gotoxy(loc.getX(), loc.getY());
+		cout << val;
+		cout.flush();
+		Sleep(1000);
 	}
 }
 int randNum::setValbyProp(){
@@ -54,7 +59,9 @@ int randNum::setValbyProp(){
 		num = (rand() % 88) + 82;
 	return num;
 }
-
+Point& randNum::getPoint(){
+	return loc;
+}
 bool randNum::isLocOnScreenOk(const randNum* num) {
 	if ((loc.getX() > 76) && (numOfDig >= 3))
 		return false;

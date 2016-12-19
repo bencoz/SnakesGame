@@ -40,14 +40,21 @@ public:
 	randNum* move();
 	int getDirection(char key);
 	void setDirection(int dir) {
-		direction = dir;
+		//if ((direction == UP && dir != DOWN) || (direction == DOWN && dir != UP) || (direction == LEFT && dir != RIGHT) || (direction == RIGHT && dir != LEFT) )
+			direction = dir;
 	}
 	char getSign();
+	int getSize();
+	int setSize(int _size);
+	int nextPointY();
+	int nextPointX();
 	void changeSize(int a){// positve for growth negative+zero for decrease.
 		if (a > 0)
 			size++;
-		else
-			size--;
+		else{
+			if (size >= 1)// snake must be with size...
+				size--;
+		}
 	}
 };
 
