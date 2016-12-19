@@ -51,6 +51,8 @@ public:
 	char TheSnakesGame::BeginScreenSwitch();
 	char TheSnakesGame::PauseScreenSwitch();
 	void TheSnakesGame::resetPosAndDir();
+	void deleteAllRandNum(randNum**);
+	BOOL TheSnakesGame::checkLoseOrWin(int size);
 	void restartClock(){
 		clock = 0;
 	}

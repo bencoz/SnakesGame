@@ -60,6 +60,7 @@ void TheSnakesGame::AfterMissionBoard() {
 
 void TheSnakesGame::setBoard(const char* boardToCopy[ROWS])
 {
+	setTextColor(WHITE);
 	for (int i = 0; i < ROWS; i++)
 	{
 		for (int j = 0; j < COLS; j++)
@@ -230,6 +231,18 @@ void TheSnakesGame::deleteHalfofRandNum(randNum** arr)
 		delete randNumbers[randNumSize - 1];
 	}
 }
+
+void TheSnakesGame::deleteAllRandNum(randNum** arr)
+{
+	int size = randNumSize;
+	for (int i = 0; i < size; i++)
+	{
+		randNumbers[i]->~randNum();
+		delete randNumbers[i];
+	}
+	randNumSize = 0;
+}
+
 bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console | if fails return false
 {
 	int num, digNum, i;
@@ -284,6 +297,7 @@ void TheSnakesGame::lookForAns(randNum** arr)
 
 void TheSnakesGame::run()
 {
+	BOOL finishGame = FALSE;
 	randNum* CurrNum;
 	char key = 0;
 	int dir, count = 0;
@@ -356,20 +370,44 @@ void TheSnakesGame::run()
 				key = 0;
 			}
 		}
+		if (s[0]->getSize() == 12 || s[0]->getSize() == 0)
+		{
+			gotoxy(0, 2);
+			cout << "Player1 ";
+			finishGame = checkLoseOrWin(s[0]->getSize());
+			Sleep(1000);
+			key = BeginScreenSwitch();
+		}
+		else if (s[1]->getSize() == 12 || s[1]->getSize() == 0)
+		{
+			gotoxy(0, 2);
+			cout << "Player2 ";
+			finishGame = checkLoseOrWin(s[1]->getSize());
+			Sleep(1000);
+			key = BeginScreenSwitch();
+		}
 		Sleep(100);
-		if (key == ESC) {
+		if (key == ESC && finishGame == FALSE) {
 			key = PauseScreenSwitch();
 		}//if
-		count = 0;
 		if (key == 1)
 		{
 			clock = 0;
 			gotoxy(66, 0);
 			cout << "   ";
+			finishGame = FALSE;
 		}
 	} while (key != ESC);
 }
 
+BOOL TheSnakesGame::checkLoseOrWin(int size) {
+	if (size == 0)
+		cout << "has Lost! Good Game";
+	else
+		cout << "has Won! Good Game";
+	Sleep(1000);
+	return TRUE;
+}
 char TheSnakesGame::PauseScreenSwitch() {
 	char key;
 	int lastMissionNum;
@@ -384,7 +422,9 @@ char TheSnakesGame::PauseScreenSwitch() {
 		break;
 	case(3) :
 		//resume game
-		init();
+		clearConsoleAndBoard();
+		printRelevant(mission->missionName(mission->getMissionNum()), s[0]->getSize(), s[1]->getSize());
+		printRandNumers(randNumbers);
 		key = 0;
 		break;
 	case(4) :
@@ -407,6 +447,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 	case(6) :
 		//restart game
 		clearConsoleAndBoard();
+		deleteAllRandNum(randNumbers);
 		resetSize();
 		resetPosAndDir();
 		printRelevant(mission->missionName(mission->getMissionNum()), 3, 3);
@@ -418,25 +459,27 @@ char TheSnakesGame::PauseScreenSwitch() {
 
 char TheSnakesGame::BeginScreenSwitch() {
 	char key;
-	switch (screen->Begin_Screen()) {
-	case(1) :
-		//show instructions
-		screen->Instructions_Screen();
-		init();
-		key = 0;
-		break;
-	case(2) :
-		//start new game
-		clearConsoleAndBoard();
-		resetSize();
-		resetPosAndDir();
-		printRelevant(mission->missionName(mission->getMissionNum()), 3, 3);
-		key = 1;
-		break;
-	case(9) :
-		//Exit game
-		key = ESC;
-		break;
-	}
+	do {
+		switch (screen->Begin_Screen()) {
+		case(1) :
+			//show instructions
+			screen->Instructions_Screen();
+			key = 0;
+			break;
+		case(2) :
+			//start new game
+			clearConsoleAndBoard();
+			deleteAllRandNum(randNumbers);
+			resetSize();
+			resetPosAndDir();
+			printRelevant(mission->missionName(mission->getMissionNum()), 3, 3);
+			key = 1;
+			break;
+		case(9) :
+			//Exit game
+			key = ESC;
+			break;
+		}
+	} while (key == 0);
 	return key;
 }

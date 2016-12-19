@@ -52,7 +52,10 @@ BOOL Mission::isM1(int num) {
 	for (i = 2; i <= num / 2; i++)
 		if (num % i == 0)
 			return 0;
-	return 1;
+	if (num > 1)
+		return 1;
+	else
+		return 0;
 }
 
 BOOL Mission::isM3(int num) {
