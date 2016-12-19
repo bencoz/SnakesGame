@@ -23,21 +23,13 @@ class TheSnakesGame {
 	char originalBoard[ROWS][COLS + 1];	// this is the original board that we got (we need COLS+1 because we handle it as null terminated char*)
 	char board[ROWS][COLS + 1];	// this is the actual board we play on, i.e. changes on board are done here
 	static unsigned int clock;
-/*	class counter {
-		static unsigned int count;
-	public:
-		void restartCount(){
-			count = 0;
-		}
-		void printCounter();
-	};*/
 public:
 	TheSnakesGame();
 	~TheSnakesGame();
 	bool isNotFree(const Point& p);
 	void setBoard(const char* boardToCopy[ROWS]);
 	void init();
-	void run();
+	BOOL run();
 	bool printRandNum(randNum* s);
 	void deleteNumFromBoard(int x, int y, int len);
 	void printSnakeOnBoard(int x, int y, char ch);
@@ -47,6 +39,15 @@ public:
 	void TheSnakesGame::AfterMissionBoard();
 	void TheSnakesGame::clearHalfRow();
 	void printClock();
+	void TheSnakesGame::resetMembers();
+	void printRandNumers(randNum** arr);
+	void printGoodJob();
+	void printNoTime();
+	void changeMission();
+	bool isSnake(const Point& p);
+	void clearConsoleAndBoard();
+	void swapRandNum(randNum a, randNum b);
+	void printRelevant(char *MissionName, int player1, int player2);
 	void restartClock(){
 		clock = 0;
 	}
