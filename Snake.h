@@ -45,14 +45,14 @@ public:
 	}
 	char getSign();
 	int getSize();
-	int setSize(int _size);
+	void setSize(int _size);
 	int nextPointY();
 	int nextPointX();
 	void changeSize(int a){// positve for growth negative+zero for decrease.
 		if (a > 0)
 			size++;
 		else{
-			if (size >= 1)// snake must be with size...
+			if (size > 1)// snake must be with size...
 				size--;
 		}
 	}

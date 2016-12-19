@@ -10,12 +10,12 @@ void Point::move(int dir) {
 	case UP:
 		--y;
 		if (y < 4) {  //because 4 upper rows are for menu !
-			y = 24;
+			y = 23;
 		}
 		break;
 	case DOWN:
 		++y;
-		if (y > 24) {
+		if (y > 23) {
 			y = 4;
 		}
 		break;

@@ -42,10 +42,10 @@ int Snake::nextPointX(){
 
 randNum* Snake::move(){
 	randNum* res = nullptr;
-
-
-	if (theGame->isNotFree(body[0].next(direction))){
-		res = theGame->isRandNum(body[0].next(direction));
+	Point NextP;
+	NextP = body[0].next(direction);
+	if (theGame->isNotFree(NextP)){
+		res = theGame->isRandNum(NextP);
 		if (res == nullptr)//not a rand number -> its a other snake.
 			direction = 4;
 	}
@@ -80,6 +80,6 @@ char Snake::getSign(){
 int Snake::getSize(){
 	return (size);
 }
-int Snake::setSize(int _size){
+void Snake::setSize(int _size){
 	size = _size;
 }
