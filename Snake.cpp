@@ -65,6 +65,15 @@ randNum* Snake::move(){
 
 	return res;
 }
+
+void Snake::setArrowKeys(const char* keys) {
+	arrowKeys[0] = keys[0];
+	arrowKeys[1] = keys[1];
+	arrowKeys[2] = keys[2];
+	arrowKeys[3] = keys[3];
+}
+
+
 int Snake::getDirection(char key)
 {
 	for (int i = 0; i < 4; i++)
@@ -82,4 +91,22 @@ int Snake::getSize(){
 }
 void Snake::setSize(int _size){
 	size = _size;
+	Point p = body[0];
+	Point *newbody = new Point[size];
+	for (int i = 0; i < size; i++)
+		newbody[i] = p;
+	delete body;
+	body = newbody;
+}
+void Snake::changeSize(int a){// positve for growth negative+zero for decrease.
+	Point p = body[0];
+	if (a > 0)
+		size++;
+	else
+		size--;
+	Point *newbody = new Point[size];
+	for (int i = 0; i < size; i++)
+		newbody[i] = p;
+	delete body;
+	body = newbody;
 }

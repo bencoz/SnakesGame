@@ -16,7 +16,7 @@ class Mission {
 public:
 	Mission(int num);
 	Mission() {
-		this->numOfMiss = rand() % 5;
+		this->numOfMiss = rand() % 6;
 	}
 	~Mission();
 	int getMissionNum() {

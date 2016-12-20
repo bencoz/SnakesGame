@@ -4,7 +4,21 @@ void Point::move() {
 	int dir = rand() % 4;
 	move(dir);
 }
-
+void Point::draw(char ch) {
+	gotoxy(x, y);
+	cout << ch;
+	cout.flush();
+}
+void Point::draw(int num) {
+	gotoxy(x, y);
+	cout << num;
+	cout.flush();
+}
+Point Point::next(int direction) {
+	Point next = *this;
+	next.move(direction);
+	return next;
+}
 void Point::move(int dir) {
 	switch (dir) {
 	case UP:

@@ -39,7 +39,7 @@ void Screen::Instructions_Screen() {
 	Clear_Screen();
 	gotoxy(0, 0);
 	setTextColor(WHITE);
-	cout << "Press Esc to main menu" << endl << endl;
+	cout << "Press Esc to retrun to main menu" << endl << endl;
 	cout << "This is a game called Snake." << endl;
 	cout << "Its a 2 players game, Each player has a snake 3 signs size." << endl;
 	cout << "The Objective is to get your snake to 12 signs size." << endl;

@@ -27,6 +27,8 @@ char *Mission::missionName(int missionNum) {
 		return "Rest_Is_3";
 	case(5) :
 		return "Sqaure_Of_13";
+	default:
+		return "ERROR";
 	}
 }
 

@@ -54,7 +54,10 @@ public:
 	void deleteAllRandNum(randNum**);
 	BOOL TheSnakesGame::checkLoseOrWin(int size);
 	void restartClock(){
+		gotoxy(66,0);
+		cout << "    ";
 		clock = 0;
+		
 	}
 	randNum* isRandNum(const Point& p);
 };
