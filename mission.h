@@ -2,26 +2,31 @@
 #define _MISSION_H_
 
 #include <string.h> 
-#include "Point.h"
+#include "Exercise.h"
 
 using namespace std;
 
 
 class TheSnakesGame;
+class Exercise;
 
 class Mission {
-	enum {PrimeNumber, DividedBy4, MultipleBy7, PowOf_Znum, RestIs3, Num169};
+	enum {Prime_Number, Divided_By_4, Multiple_By_7, Square_Of_Z_Num, Rest_Is_3, Square_Of_13, exercise};
 	TheSnakesGame * theGame;
 	int numOfMiss;
+	Exercise *Exc;
 public:
 	Mission(int num);
 	Mission() {
-		this->numOfMiss = rand() % 5;
+		numOfMiss = rand() % 6;
+		if (numOfMiss == 6)
+			Exc = new Exercise;
 	}
 	~Mission();
 	int getMissionNum() {
 		return numOfMiss;
 	}
+	char* missionName(int missionNum);
 	BOOL isMissionOK(int missionNum, int num);
 	BOOL isM1(int num);
 	BOOL isM2(int num);
