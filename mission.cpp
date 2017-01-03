@@ -1,10 +1,11 @@
 #include "mission.h"
 #include "TheSnakesGame.h"
 
+
 Mission::Mission(int num) {
 	int newMiss;
 	do {
-		newMiss = rand() % 6;
+		newMiss = rand() % 7;
 	} while (newMiss == num);
 	numOfMiss = newMiss;
 	if (numOfMiss == 6)
@@ -30,7 +31,7 @@ char *Mission::missionName(int missionNum) {
 	case(5) :
 		return "Sqaure_Of_13";
 	case(6) :
-
+		return Exc->ExcName();
 	default:
 		return "ERROR";
 	}
@@ -50,7 +51,7 @@ BOOL Mission::isMissionOK(int missionNum, int num){
 	else if (missionNum == Square_Of_13)
 		return isM6(num);
 	else if (missionNum == exercise)
-		return Exc->isNumCorrect(num);
+		return (Exc->isNumCorrect(num));
 	else
 		return 0;
 }

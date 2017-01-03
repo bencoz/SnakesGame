@@ -1,7 +1,9 @@
 #ifndef _MISSION_H_
 #define _MISSION_H_
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <string.h> 
+#include "Point.h"
 #include "Exercise.h"
 
 using namespace std;
@@ -18,7 +20,7 @@ class Mission {
 public:
 	Mission(int num);
 	Mission() {
-		numOfMiss = rand() % 6;
+		numOfMiss = rand() % 7;
 		if (numOfMiss == 6)
 			Exc = new Exercise;
 	}
@@ -26,7 +28,7 @@ public:
 	int getMissionNum() {
 		return numOfMiss;
 	}
-	char* missionName(int missionNum);
+	char * missionName(int missionNum);
 	BOOL isMissionOK(int missionNum, int num);
 	BOOL isM1(int num);
 	BOOL isM2(int num);
