@@ -1,4 +1,5 @@
 #include "randNum.h"
+#include "TheSnakesGame.h"
 
 randNum::randNum(TheSnakesGame* _theGame) {
 	val = setValbyProp();
@@ -12,11 +13,14 @@ randNum::randNum(TheSnakesGame* _theGame) {
 	for (int i = 0; (i < 3) && (isLocOnScreenOk(this) == false); i++)  //tring 3 times to find a place on board
 		loc.set(rand() % 80, rand() % 18 + 5);
 }
+
+
 randNum::~randNum() {
+	thegame->deleteNumFromBoard(loc.getX(), loc.getY(), numOfDig);
 	gotoxy(loc.getX(), loc.getY());
 	for (int i = 0; i < numOfDig; i++)
 		cout << ' ';
-
+	cout.flush();
 }
 
 
@@ -29,6 +33,21 @@ void randNum::draw() {
 	cout << val;
 	cout.flush();
 }
+
+void randNum::flicker() {
+	for (int i = 0; i < 2; i++){
+		setTextColor(YELLOW);
+		gotoxy(loc.getX(), loc.getY());
+		cout << val;
+		cout.flush();
+		Sleep(1000);
+		setTextColor(WHITE);
+		gotoxy(loc.getX(), loc.getY());
+		cout << val;
+		cout.flush();
+		Sleep(1000);
+	}
+}
 int randNum::setValbyProp(){
 	int num;
 	num = rand() % 10;
@@ -40,7 +59,9 @@ int randNum::setValbyProp(){
 		num = (rand() % 88) + 82;
 	return num;
 }
-
+Point& randNum::getPoint(){
+	return loc;
+}
 bool randNum::isLocOnScreenOk(const randNum* num) {
 	if ((loc.getX() > 76) && (numOfDig >= 3))
 		return false;

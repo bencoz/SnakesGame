@@ -6,8 +6,14 @@ using namespace std;
 #include "_board.h"
 
 int main() {
+	char key;
+	hideCursor();
 	TheSnakesGame game;
-	game.setBoard(start_board);
-	game.init();
-	game.run();
+	key = game.BeginScreenSwitch();
+	if (key == 1)
+	{
+		game.setBoard(start_board);
+		game.init();
+		game.run();
+	}
 }

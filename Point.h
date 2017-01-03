@@ -7,7 +7,6 @@
 using namespace std;
 enum { UP=0, DOWN=1, LEFT=2, RIGHT=3 };
 
-
 class Point {
 	int x, y;
 public:
@@ -23,23 +22,13 @@ public:
 		x = _x;
 		y = _y;
 	}
-	void draw(char ch) {
-		gotoxy(x, y);
-		cout << ch;
-		cout.flush();
-	}
-	void draw(int num) {
-		gotoxy(x, y);
-		cout << num;
-		cout.flush();
-	}
+	void draw(char ch);
+	void draw(int num);
+	Point next(int direction);
+
 	void move();
 	void move(int direction);
-	Point next(int direction) {
-		Point next = *this;
-		next.move(direction);
-		return next;
-	}
+
 	bool isSame(const Point& p) const {
 		return x == p.x && y == p.y;
 	}

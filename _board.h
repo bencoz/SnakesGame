@@ -5,9 +5,9 @@ const char* start_board[ROWS] = {
 
 	//	         10        20        30        40        50        60        70       79
 	//01234567890123456789012345678901234567890123456789012345678901234567890123456789
-	"(1). Press 1 to Show Options Menu.                           TIME:              ", // 0
-	"(2). Press 2 to Start the Game.                         Player1 | Player2       ", // 1
-	"(3). Press ESC to EXIT                                     3         3          ", // 2
+	"                                                             TIME:              ", // 0
+	"Press ESC to menu                                       Player1 | Player2       ", // 1
+	"                                                           3         3          ", // 2
 	"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", // 3
 	"                                                                                ", // 4
 	"                                                                                ", // 5
