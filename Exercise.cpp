@@ -23,90 +23,15 @@ Exercise::Exercise() {
 		answer = nums[3];
 }
 
-char *Exercise::ExcName() {
-	char *res;
-	int i, phSize=2, logSize=2,size;
-	res = new char[phSize];
-	res[0] = '\0';
-	for (i = 0; i < 4;i++) {
-		if (nums[i] == answer)
-		{
-			if (phSize == logSize)
-			{
-				changeSizes(phSize, &logSize, &res);
-				phSize++;
-				strcat(res, "_");
-			}//inner if
-			else
-				strcat(res, "_");
-		}//num==answer
-		else
-		{
-			if (phSize == logSize)
-			{
-				changeSizes(phSize, &logSize, &res);
-				phSize += theSizeOf(nums[i]);
-				addNumtoRes(&res, nums[i]);
-			}//inner if
-			else
-			{
-				phSize += theSizeOf(nums[i]);
-				addNumtoRes(&res, nums[i]);
-			}
-		}//num!=answer
-		if (phSize == logSize)
-		{
-			changeSizes(phSize, &logSize, &res);
-			phSize++;
-			addOpToRes(&res, i);
-		}
-		else 
-		{
-			phSize++;
-			addOpToRes(&res, i);
-		}
-	}//for
-	return res;
-}//ExcName
-
-void Exercise::addOpToRes(char **res, int num) {
-	if (num == 0)
-		strcat(*res, &op1);
-	else if (num == 1)
-		strcat(*res, &op2);
+void Exercise::printExc() {
+	if (answer == nums[0])
+		cout << "_" << op1 << nums[1] << op2 << nums[2] << "=" << nums[3];
+	else if (answer == nums[1])
+		cout << nums[0] << op1 << "_" << op2 << nums[2] << "=" << nums[3];
+	else if (answer == nums[2])
+		cout << nums[0] << op1 << nums[1] << op2 << "_" << "=" << nums[3];
 	else
-		strcat(*res, "=");
-}
-
-int Exercise::theSizeOf(int num) {
-	if (num > 99)
-		return 3;
-	else if (num > 9)
-		return 2;
-	else
-		return 1;
-}
-
-void Exercise::addNumtoRes(char **res, int num) {
-	char *copy;
-	copy = new char[theSizeOf(num)];
-	_itoa(num, copy, DECIMAL);
-	strcat(*res, copy);
-	delete[]copy;
-}
-
-void Exercise::changeSizes(int phSize, int *logSize, char **res) {
-	
-	int lgSize = *logSize;
-	char * copy=new char[phSize];
-	strcpy(copy, *res);
-	lgSize *= 2;
-	delete[] * res;
-	*res = new char[lgSize];
-	strcpy(*res, copy);
-	*logSize = lgSize;
-	delete[]copy;
-	
+		cout << nums[0] << op1 << nums[1] << op2 << nums[2] << "=" << "_";
 }
 
 int Exercise::Random() {
@@ -121,10 +46,8 @@ char Exercise::RandomOp() {
 		return '-';
 	else if (op == 2)
 		return '*';
-	else if (op == 3)
-		return '/';
 	else
-		return '%';
+		return '/';
 }
 
 int Exercise::calculateExc(const int& num1, const int& num2, const int& num3, const char& op1, const char& op2) {
@@ -152,10 +75,8 @@ int Exercise::checkOp(const char& op, const int& num1, const int& num2) {
 		res = num1 - num2;
 	else if (op == '*')
 		res = num1*num2;
-	else if (op == '/')
+	else
 		res = num1 / num2;
-	else if (op == '%')
-		res = num1%num2;
 	return res;
 }
 
@@ -163,10 +84,8 @@ int Exercise::correctOpOrder(const int& num1, const int &num2, const int& num3, 
 	int res;
 	if (op2 == '*')
 		res = num2*num3;
-	else if (op2 == '/')
-		res = num2 / num3;
 	else
-		res = num2%num3;
+		res = num2 / num3;
 	if (op1 == '+')
 		res += num1;
 	else

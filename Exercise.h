@@ -13,11 +13,7 @@ class Exercise {
 	char op1, op2;
 public:
 	Exercise();
-	char *ExcName();
-	void addOpToRes(char **res, int num);
-	int theSizeOf(int num);
-	void addNumtoRes(char **res, int num);
-	void changeSizes(int phSize, int *logSize, char **res);
+	void printExc();
 	int Random();
 	char RandomOp();
 	int calculateExc(const int& num1, const int& num2, const int& num3, const char& op1, const char& op2);

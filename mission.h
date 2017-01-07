@@ -28,7 +28,7 @@ public:
 	int getMissionNum() {
 		return numOfMiss;
 	}
-	char * missionName(int missionNum);
+	void printMissionName(int missionNum);
 	BOOL isMissionOK(int missionNum, int num);
 	BOOL isM1(int num);
 	BOOL isM2(int num);

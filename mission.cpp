@@ -16,24 +16,31 @@ Mission::~Mission() {
 	
 }
 
-char *Mission::missionName(int missionNum) {
+void Mission::printMissionName(int missionNum) {
 	switch (missionNum) {
 	case(0) :
-		return "Prime_Number";
+		cout << "Prime_Number";
+		break;
 	case(1) :
-		return "Divided_By_4";
+		cout << "Divided_By_4";
+		break;
 	case(2) :
-		return "Multiple_By_7";
+		cout << "Multiple_By_7";
+		break;
 	case(3) :
-		return "Sqaure_Of_Z_Num";
+		cout << "Sqaure_Of_Z_Num";
+		break;
 	case(4) :
-		return "Rest_Is_3";
+		cout << "Rest_Is_3";
+		break;
 	case(5) :
-		return "Sqaure_Of_13";
+		cout << "Sqaure_Of_13";
+		break;
 	case(6) :
-		return Exc->ExcName();
+		Exc->printExc();
+		break;
 	default:
-		return "ERROR";
+		cout << "ERROR";
 	}
 }
 
