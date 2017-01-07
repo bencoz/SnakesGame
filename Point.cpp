@@ -1,6 +1,6 @@
 #include "Point.h"
 
-void Point::move() {
+void Point::randmove() {
 	int dir = rand() % 4;
 	move(dir);
 }
