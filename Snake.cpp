@@ -60,7 +60,7 @@ randNum* Snake::move(){
 	randNum* res = nullptr;
 	Point NextP;
 	NextP = body[0].next(direction);
-	if (theGame->isNotFree(NextP)){
+	if (!(theGame->isSpotFree(NextP))){
 		res = theGame->isRandNum(NextP);
 		if (res == nullptr)//not a rand number -> its a other snake.
 			direction = STOP;
