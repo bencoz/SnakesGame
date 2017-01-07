@@ -47,7 +47,7 @@ public:
 	bool isSnake(const Point& p);
 	void clearConsoleAndBoard();
 	void swapRandNum(randNum a, randNum b);
-	void printRelevant(char *MissionName, int player1, int player2);
+	void printRelevant(int player1, int player2);
 	char TheSnakesGame::BeginScreenSwitch();
 	char TheSnakesGame::PauseScreenSwitch();
 	void TheSnakesGame::resetPosAndDir();
