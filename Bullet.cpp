@@ -1,6 +1,6 @@
 #include "Snake.h"
 #include "TheSnakesGame.h"
-
+#include "Bullet.h"
 
 
 randNum* Bullet::move(){
@@ -9,7 +9,7 @@ randNum* Bullet::move(){
 	Point p(Snake::getLoc());
 	Point NextP(Snake::nextPointX(), Snake::nextPointY());
 
-	if (theGame->isNotFree(NextP)){
+	if (!(theGame->isSpotFree(NextP))){
 		wasHit = true;
 		res = theGame->isRandNum(NextP);
 		if (res == nullptr){//not a rand number -> its a other snake.
@@ -22,14 +22,15 @@ randNum* Bullet::move(){
 			}
 			else { //spot is not free and is not a number and not a snake -> its another bullet
 				if (theGame->checkShootOnBoard(NextP))
-					theGame->destroyShot(NextP);
+					theGame->setBulletHit(NextP);
 			}
 		}
 	}
-	//if (Shooter->getLoc() != p){
-		theGame->printCharOnBoard(p, ' ');
-		p.draw(' ');
-	//}
+
+	theGame->printCharOnBoard(p, ' ');
+	p.draw(' ');
+
+
 	p.move(Snake::getDirection());
 	setTextColor(LIGHTRED);
 	p.draw(Snake::getSign());

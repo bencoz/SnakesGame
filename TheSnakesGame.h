@@ -28,7 +28,7 @@ class TheSnakesGame {
 public:
 	TheSnakesGame();
 	~TheSnakesGame();
-	bool isNotFree(const Point& p);
+	bool isSpotFree(const Point& p);
 	void setBoard(const char* boardToCopy[ROWS]);
 	void init();
 	void run();
@@ -72,7 +72,8 @@ public:
 	void unFreezeSnake(Snake* s);
 	void clearBulletsFromGame();
 	bool checkShootOnBoard(Point p);
-	void destroyShot(Point p);
+	void setBulletHit(Point p);
+	void destroyHitBullets();
 };
 
 #endif

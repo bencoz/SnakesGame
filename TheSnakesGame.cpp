@@ -1,5 +1,6 @@
 #include "TheSnakesGame.h"
 #include "randNum.h"
+#include "Bullet.h"
 
 int TheSnakesGame::randNumSize;
 unsigned int TheSnakesGame::clock;
@@ -106,28 +107,42 @@ Snake* TheSnakesGame::checkSnakeOnBoard(Point p){
 		return nullptr;
 }
 
+bool TheSnakesGame::isSnake(const Point& p) {
+	if (board[p.getY()][p.getX()] == s[0]->getSign() || board[p.getY()][p.getX()] == s[1]->getSign())
+		return true;
+	else
+		return false;
+}
+
 bool TheSnakesGame::checkShootOnBoard(Point p){
 	char ch;
 	ch = board[p.getY()][p.getX()];
 	return (ch == '*' ? true : false);
 }
-void
-TheSnakesGame::destroyShot(Point p){
+
+void TheSnakesGame::setBulletHit(Point p){
 	int pos = -1; 
 	for (int i = 0; i < gameStackLogSize; i++)
 	{
 		if (stack[i]->getLoc() == p)
 			pos = i;
 	}
-	if (pos != -1){ //if found
-		/*swapBulletinStack(pos, gameStackLogSize - 1);
-		delete stack[gameStackLogSize - 1];
-		gameStackLogSize--;*/
+	if (pos != -1)
 		stack[pos]->setHit(true);
-	}
-
 }
 
+void TheSnakesGame::destroyHitBullets(){
+	for (int i = 0; i < gameStackLogSize; i++)
+	{
+		if (stack[i]->hit()){
+			printCharOnBoard(stack[i]->getLoc(), ' ');
+			printCharOnConsole(stack[i]->getLoc(), ' ');
+			swapBulletinStack(i, gameStackLogSize - 1);
+			delete stack[gameStackLogSize - 1];
+			gameStackLogSize--;
+		}
+	}
+}
 
 void TheSnakesGame::printClock(){
 	clock++;
@@ -187,12 +202,12 @@ void TheSnakesGame::init()
 	s[1]->setArrowKeys("imjln");
 }
 
-bool TheSnakesGame::isNotFree(const Point& p)
+bool TheSnakesGame::isSpotFree(const Point& p)
 {
 	if (board[p.getY()][p.getX()] == ' ')
-		return false;
-	else
 		return true;
+	else
+		return false;
 }
 
 void TheSnakesGame::resetSize() {
@@ -230,12 +245,7 @@ randNum* TheSnakesGame::isRandNum(const Point& p) {
 	return res;
 }
 
-bool TheSnakesGame::isSnake(const Point& p) {
-	if (board[p.getY()][p.getX()] == '@' || board[p.getY()][p.getX()] == '#')
-		return true;
-	else
-		return false;
-}
+
 
 void TheSnakesGame::clearConsoleAndBoard() {
 	gotoxy(0, 0);
@@ -392,16 +402,16 @@ void TheSnakesGame::lookForAns(randNum** arr)
 
 void TheSnakesGame::unFreezeSnake(Snake* s){
 	Point p(rand() % 80, (rand() % 20) + 4);
-	while (!(isNotFree(p)))
+	while (!(isSpotFree(p)))
 		p.set(rand() % 80, (rand() % 20) + 4);
 	s->setFreeze(false);
-	s->setLoc(p);
+	s->setPosition(p);
 }
 
 void TheSnakesGame::run()
 {
 	BOOL finishGame = FALSE;
-	randNum* CurrNum;
+	randNum* CurrNum = nullptr;
 	char key = 0;
 	int dir, count = 0, freeze1 = 0, freeze2 = 0;
 	do
@@ -422,8 +432,8 @@ void TheSnakesGame::run()
 				s[0]->setDirection(dir);
 			else if ((dir = s[1]->getDirection(key)) != -1)
 				s[1]->setDirection(dir);
-			if (s[0]->shoot(key)){}
-			if (s[1]->shoot(key)){}
+			s[0]->shoot(key);
+			s[1]->shoot(key);
 			if (s[0]->isFreeze()){
 				freeze1++;
 				if (freeze1 == 25){
@@ -444,6 +454,7 @@ void TheSnakesGame::run()
 				freeze2 = 0;
 		}
 		shootsMove();
+		destroyHitBullets();
 		if (randNumSize == 60) { //end of mission - lack of time
 			printNoTime();
 			lookForAns(randNumbers);
@@ -545,6 +556,8 @@ char TheSnakesGame::PauseScreenSwitch() {
 	case(4) :
 		//restart current mission
 		clearConsoleAndBoard();
+		deleteAllRandNum(randNumbers);
+		clearBulletsFromGame();
 		resetPosAndDir();
 		printRelevant(s[0]->getSize(), s[1]->getSize());
 		restartClock();
@@ -553,6 +566,8 @@ char TheSnakesGame::PauseScreenSwitch() {
 	case(5) :
 		//start new mission
 		clearConsoleAndBoard();
+		deleteAllRandNum(randNumbers);
+		clearBulletsFromGame();
 		changeMission();
 		resetPosAndDir();
 		printRelevant(s[0]->getSize(), s[1]->getSize());
@@ -562,6 +577,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 		//restart game
 		clearConsoleAndBoard();
 		deleteAllRandNum(randNumbers);
+		clearBulletsFromGame();
 		resetSize();
 		resetPosAndDir();
 		printRelevant(s[0]->getSize(), s[1]->getSize());

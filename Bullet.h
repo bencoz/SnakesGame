@@ -3,14 +3,26 @@
 
 #include <iostream>
 #include "io_utils.h"
+class Snake;
 
-using namespace std;
-enum { UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3 };
-
-class Bullet : public Point {
-
-
-
+class Bullet : public Snake {
+	bool wasHit = false;
+	Snake *Shooter = nullptr;
+	TheSnakesGame *theGame = nullptr;
+public:
+	Bullet() : Snake(1, { 0, 0 }, LIGHTRED, STOP, '*') {};
+	Bullet(Snake *s) : Snake(1, (s->getLoc()).next(s->getDirection()), LIGHTRED, s->getDirection(), '*') {
+		Shooter = s;
+		theGame = s->getGame();
+	}
+	//~Bullet();
+	randNum* move();
+	void setHit(bool flag){
+		wasHit = flag;
+	}
+	bool hit(){
+		return wasHit;
+	}
 };
 
 
