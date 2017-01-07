@@ -16,9 +16,10 @@ public:
 	void printExc();
 	int Random();
 	char RandomOp();
-	int calculateExc(const int& num1, const int& num2, const int& num3, const char& op1, const char& op2);
+	void specialRandom(int&num1, int& num2);
+	int calculateExc(const char& op1, const char& op2);
 	int checkOp(const char& op, const int& num1, const int& num2);
-	int correctOpOrder(const int& num1, const int &num2, const int& num3, const char&op1, const char&op2);
+	int correctOpOrder(const int& num1, const int &num2, const int& num3, const char&op1, const char&op2, bool flag);
 	bool isNumCorrect(int num) {
 		if (num == answer)
 			return true;
