@@ -413,12 +413,11 @@ void TheSnakesGame::unFreezeSnake(Snake* s){
 
 
 void TheSnakesGame::printboard(){
-	gotoxy(5, 0);
 	for (int i = 5; i < ROWS; i++){
 		for (int j = 0; j < COLS; j++){
+			gotoxy(j, i);
 			cout << board[i][j];
 		}
-		cout << endl;
 	}
 }
 
@@ -433,15 +432,19 @@ void TheSnakesGame::run()
 		if (_kbhit())
 		{
 			printClock();
-			if (count % 5 == 0) {
+			if (count % 1 == 0) {
 				randNumbers[randNumSize] = new randNum(this);
-				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
+				if (TheSnakesGame::printRandNum(randNumbers[randNumSize])){
+					randNumbers[randNumSize]->setPrint();
 					randNumSize++;
+				}
 				else{
+					randNumbers[randNumSize]->~randNum();
 					delete randNumbers[randNumSize];
-					//printboard();
 				}
 			}
+			if (randNumSize > 56)
+				count++;
 			count++;
 			key = _getch();
 			if ((dir = s[0]->getDirection(key)) != -1)

@@ -16,11 +16,13 @@ randNum::randNum(TheSnakesGame* _theGame) {
 
 
 randNum::~randNum() {
-	thegame->deleteNumFromBoard(loc, numOfDig);
-	gotoxy(loc.getX(), loc.getY());
-	for (int i = 0; i < numOfDig; i++)
-		cout << ' ';
-	cout.flush();
+	if (print){
+		thegame->deleteNumFromBoard(loc, numOfDig);
+		gotoxy(loc.getX(), loc.getY());
+		for (int i = 0; i < numOfDig; i++)
+			cout << ' ';
+		cout.flush();
+	}
 }
 
 

@@ -11,6 +11,7 @@ class Point;
 class randNum{
 	int val;
 	int numOfDig = 1;
+	bool print = false;
 	Point loc;
 	TheSnakesGame* thegame;
 public:
@@ -34,6 +35,9 @@ public:
 	bool isLocOnScreenOk(const randNum*);
 	void setGame(TheSnakesGame* _theGame);
 	Point& getPoint();
+	void setPrint(){
+		print = true;
+	}
 };
 
 #endif
