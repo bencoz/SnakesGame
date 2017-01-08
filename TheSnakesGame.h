@@ -74,6 +74,7 @@ public:
 	bool checkShootOnBoard(Point p);
 	void setBulletHit(Point p);
 	void destroyHitBullets();
+	void printboard();
 };
 
 #endif

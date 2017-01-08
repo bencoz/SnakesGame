@@ -328,7 +328,7 @@ void TheSnakesGame::swapRandNum(randNum** arr, int a, int b)
 }
 void TheSnakesGame::deleteHalfofRandNum(randNum** arr)
 {
-	int del, size = randNumSize / 2;
+	int del, size = (randNumSize / 2);
 	for (int i = 0; i < size; i++, randNumSize--)
 	{
 		del = rand() % randNumSize;
@@ -340,8 +340,7 @@ void TheSnakesGame::deleteHalfofRandNum(randNum** arr)
 
 void TheSnakesGame::deleteAllRandNum(randNum** arr)
 {
-	int size = randNumSize;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < randNumSize; i++)
 	{
 		randNumbers[i]->~randNum();
 		delete randNumbers[i];
@@ -356,7 +355,11 @@ bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console 
 	digNum = rand->getNumDig();
 	for (i = -1; i < digNum + 1; i++) //check if there is something(snake/randNum) close (to the left or to the right) on board
 	{
-		if (board[rand->getRandY()][rand->getRandX() + i] != ' ')
+		if ((rand->getRandX() == 0) && i == -1)// edge case of being on the left end of screen
+			i = 0;
+		if ((i == digNum) && (board[rand->getRandY()][rand->getRandX() + i] == '\0')) //edge case of being on the right end of screen
+			break;
+		else if (board[rand->getRandY()][rand->getRandX() + i] != ' ')
 			return false;
 	}
 	if (digNum == 3) {
@@ -408,6 +411,17 @@ void TheSnakesGame::unFreezeSnake(Snake* s){
 	s->setPosition(p);
 }
 
+
+void TheSnakesGame::printboard(){
+	gotoxy(5, 0);
+	for (int i = 5; i < ROWS; i++){
+		for (int j = 0; j < COLS; j++){
+			cout << board[i][j];
+		}
+		cout << endl;
+	}
+}
+
 void TheSnakesGame::run()
 {
 	BOOL finishGame = FALSE;
@@ -423,8 +437,10 @@ void TheSnakesGame::run()
 				randNumbers[randNumSize] = new randNum(this);
 				if (TheSnakesGame::printRandNum(randNumbers[randNumSize]))
 					randNumSize++;
-				else
+				else{
 					delete randNumbers[randNumSize];
+					//printboard();
+				}
 			}
 			count++;
 			key = _getch();
@@ -455,7 +471,7 @@ void TheSnakesGame::run()
 		}
 		shootsMove();
 		destroyHitBullets();
-		if (randNumSize == 60) { //end of mission - lack of time
+		if (randNumSize >= 60) { //end of mission - lack of time
 			printNoTime();
 			lookForAns(randNumbers);
 			changeMission();
