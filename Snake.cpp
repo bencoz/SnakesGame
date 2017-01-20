@@ -2,82 +2,42 @@
 #include "TheSnakesGame.h"
 
 
-Snake::Snake(int size, const Point& position, Color c, int dir, char symb)
+//Snake::Snake(int size, const Point& p, Color c, int dir, char sign) {}
+/*Snake::Snake(const Snake& s)
 {
-	setSign(symb);
-	direction = dir;
-	setColor(c);
-	this->size = size;
-	body = new Point[size];
-	for (int i = 0; i < size; i++)
-		body[i] = position;
-}
-
-Snake::Snake(const Snake& s)
-{
-	setColor(s.color);
-	size = s.size;
-	body = new Point[size];
-	for (int i = 0; i < size; i++)
-	{
-		body[i] = s.body[i];
+	stackSize = s.stackSize;
+	freeze = s.freeze;
+	for (int i = 0; i < 5; i++){
+		arrowKeys[i] = s.arrowKeys[i];
 	}
-}
-
+}*/
 /*Snake::~Snake(){
 	for (int i = 0; i < size; i++)
 		theGame->printCharOnBoard(body[i], ' ');
 	delete[] body;
 }*/
-void Snake::setPosition(int x, int y)
-{
-	for (int i = 0; i < size; i++)
-		body[i].set(x, y);
-}
-void Snake::setPosition(Point p)
-{
-	for (int i = 0; i < size; i++)
-		body[i] = p;
-}
-int Snake::nextPointY(){
-	Point p;
-	p = body[0].next(direction);
-	return (p.getY());
-}
-int Snake::nextPointX(){
-	Point p;
-	p = body[0].next(direction);
-	return (p.getX());
-}
 
-TheSnakesGame *Snake::getGame(){
-	return theGame;
-}
-Point& Snake::getLoc(){
-	return body[0];
-}
 randNum* Snake::move(){
 	randNum* res = nullptr;
+	Point p;
 	Point NextP;
-	NextP = body[0].next(direction);
-	if (!(theGame->isSpotFree(NextP))){
-		res = theGame->isRandNum(NextP);
+	p = getLoc();
+	NextP = p.next(BasicOBJ::getDirection());
+	if (!(getTheGame()->isSpotFree(NextP))){
+		res = getTheGame()->isRandNum(NextP);
 		if (res == nullptr)//not a rand number -> its a other snake.
-			direction = STOP;
+			setDirection(STOP);
 	}
 	
-	if (direction != STOP){
-	body[size - 1].draw(' ');
-	theGame->printSnakeOnBoard(body[size - 1].getX(), body[size - 1].getY(), ' ');
-	for (int i = size - 1; i > 0; --i)
-		body[i] = body[i - 1];
+	if (BasicOBJ::getDirection() != STOP){
+		getTail().draw(' ');
+		getTheGame()->printCharOnBoard(getTail(), ' ');
+		moveBody();
 	}
-	
-
-	body[0].move(direction);
-	setTextColor(color);
-	body[0].draw(sign);
-	theGame->printSnakeOnBoard(body[0].getX(), body[0].getY(), sign);
+	getLoc().move(BasicOBJ::getDirection());
+	setTextColor(getColor());
+	getLoc().draw(getSign());
+	getTheGame()->printCharOnBoard(getLoc(), getSign());
 
 	return res;
 }
@@ -91,29 +51,14 @@ void Snake::reload(int a){
 void Snake::setFreeze(int a){
 	a > 0 ? freeze = true : freeze = false;
 }
-void Snake::setLoc(Point p){
-	for (int i = 0; i < size; i++)
-		body[i] = p;
-}
-void Snake::cleanSnakefromGame(){
-	int x, y;
-	for (int i = 0; i<size; i++){
-		x = body[i].getX();
-		y = body[i].getY();
-		gotoxy(x, y);
-		cout << ' ';
-		cout.flush();
-		theGame->printCharOnBoard(body[i], ' ');
-	}
-}
+
 bool Snake::shoot(char key){
-	if ((key == arrowKeys[4]) && (stackSize > 0) && (direction != STOP)){
+	if ((key == arrowKeys[4]) && (stackSize > 0) && (BasicOBJ::getDirection() != STOP)){
 		stackSize--;
-		theGame->shoot(this);
+		getTheGame()->shoot(this);
 		return true;
 	}
 	else return false;
-	
 }
 
 void Snake::setArrowKeys(const char* keys) {
@@ -133,36 +78,4 @@ int Snake::getDirection(char key)
 			return i;
 	}
 	return -1;
-}
-int Snake::getDirection()
-{
-	return direction;
-}
-
-char Snake::getSign(){
-	return (sign);
-}
-int Snake::getSize(){
-	return (size);
-}
-void Snake::setSize(int _size){
-	size = _size;
-	Point p = body[0];
-	Point *newbody = new Point[size];
-	for (int i = 0; i < size; i++)
-		newbody[i] = p;
-	delete body;
-	body = newbody;
-}
-void Snake::changeSize(int a){// positve for growth negative+zero for decrease.
-	Point p = body[0];
-	if (a > 0)
-		size++;
-	else
-		size--;
-	Point *newbody = new Point[size];
-	for (int i = 0; i < size; i++)
-		newbody[i] = p;
-	delete body;
-	body = newbody;
 }

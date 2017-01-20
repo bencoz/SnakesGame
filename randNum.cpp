@@ -8,6 +8,7 @@ randNum::randNum(TheSnakesGame* _theGame) {
 		numOfDig = 3;
 	else if (val >= 10)
 		numOfDig = 2;
+	solve = checkMission();
 	loc.set(rand() % 80, rand() % 18 + 5);
 
 	for (int i = 0; (i < 3) && (isLocOnScreenOk(this) == false); i++)  //tring 3 times to find a place on board
@@ -29,6 +30,20 @@ randNum::~randNum() {
 void randNum::setGame(TheSnakesGame* _theGame) {
 	thegame = _theGame;
 }
+
+bool randNum::checkMission(){
+	Mission* m;
+	m = thegame->getMission();
+	if (m->isMissionOK(m->getMissionNum(), val)){
+		solve = true;
+		return true;
+	}
+	else{
+		solve = false;
+		return false;
+	}
+}
+
 void randNum::draw() {
 	setTextColor(WHITE);
 	gotoxy(loc.getX(), loc.getY());

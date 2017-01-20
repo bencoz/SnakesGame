@@ -29,6 +29,12 @@ public:
 		}
 		else return false;
 	}
+	Point& operator-(const Point& p) {
+		if (&p != this){
+			Point* res = new Point(abs(p.getX() - x), abs(p.getY() - y));
+			return *res;
+		}
+	}
 	int getX() const {
 		return x;
 	}

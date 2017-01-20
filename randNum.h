@@ -12,6 +12,7 @@ class randNum{
 	int val;
 	int numOfDig = 1;
 	bool print = false;
+	bool solve = false;
 	Point loc;
 	TheSnakesGame* thegame;
 public:
@@ -30,6 +31,12 @@ public:
 	int getNumDig(){
 		return numOfDig;
 	}
+	void setSolve(int a){
+		a > 0 ? solve = true : solve = false;
+	}
+	bool getSolve(){
+		return solve;
+	}
 	void draw();
 	void flicker();
 	bool isLocOnScreenOk(const randNum*);
@@ -38,6 +45,7 @@ public:
 	void setPrint(){
 		print = true;
 	}
+	bool checkMission();
 };
 
 #endif

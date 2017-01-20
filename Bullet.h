@@ -5,18 +5,16 @@
 #include "io_utils.h"
 class Snake;
 
-class Bullet : public Snake {
+class Bullet : public BasicOBJ {
 	bool wasHit = false;
 	Snake *Shooter = nullptr;
-	TheSnakesGame *theGame = nullptr;
 public:
-	Bullet() : Snake(1, { 0, 0 }, LIGHTRED, STOP, '*') {};
-	Bullet(Snake *s) : Snake(1, (s->getLoc()).next(s->getDirection()), LIGHTRED, s->getDirection(), '*') {
+	Bullet() : BasicOBJ(1, { 0, 0 }, LIGHTRED, STOP, '*') {};
+	Bullet(Snake *s) : BasicOBJ(1, (s->getLoc()), LIGHTRED, s->BasicOBJ::getDirection(), '*') {
 		Shooter = s;
-		theGame = s->getGame();
 	}
 	//~Bullet();
-	randNum* move();
+	virtual randNum* move();
 	void setHit(bool flag){
 		wasHit = flag;
 	}

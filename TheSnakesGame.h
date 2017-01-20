@@ -17,12 +17,12 @@ class Screen;
 class TheSnakesGame {
 	Screen *screen;
 	Mission *mission;
-	Snake** s;
-	randNum** randNumbers;
+	Snake **snakes;
 	Bullet **stack;
+	randNum** randNumbers;
+	BasicOBJ **creatures;
 	int gameStackLogSize=0, gameStackPhSize=1;
 	static int randNumSize;
-	char originalBoard[ROWS][COLS + 1];	// this is the original board that we got (we need COLS+1 because we handle it as null terminated char*)
 	char board[ROWS][COLS + 1];	// this is the actual board we play on, i.e. changes on board are done here
 	static unsigned int clock;
 public:
@@ -48,7 +48,6 @@ public:
 	void changeMission();
 	bool isSnake(const Point& p);
 	void clearConsoleAndBoard();
-	void swapRandNum(randNum a, randNum b);
 	void printRelevant(int player1, int player2);
 	char TheSnakesGame::BeginScreenSwitch();
 	char TheSnakesGame::PauseScreenSwitch();
@@ -62,6 +61,7 @@ public:
 		
 	}
 	randNum* isRandNum(const Point& p);
+	void refresh(); // this function changes mission, deleting half of the rand nums, cleaning board and reprinting.
 	void printCharOnBoard(const Point& p, char ch);
 	void printCharOnConsole(const Point& p, char ch);
 	void shoot(Snake *s);
@@ -74,6 +74,19 @@ public:
 	bool checkShootOnBoard(Point p);
 	void setBulletHit(Point p);
 	void destroyHitBullets();
+	Mission* getMission(){
+		return mission;
+	}
+	void checkSolveForAll();
+	void creaturesCreator();
+	Point** getSolvers(int *size);
 };
+
+template<class T>
+void myswap(T& a, T&b){
+	T temp = a;
+	a = b;
+	b = temp;
+}
 
 #endif

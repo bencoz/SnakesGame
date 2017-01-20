@@ -1,31 +1,56 @@
 #include "TheSnakesGame.h"
 #include "randNum.h"
 #include "Bullet.h"
+#include "Cretures.h"
 
 int TheSnakesGame::randNumSize;
 unsigned int TheSnakesGame::clock;
 
 TheSnakesGame::TheSnakesGame() //c'tor
 {
-	s = new Snake*[2];
-	s[0] = new Snake(3, Point(10, 9), Color::LIGHTGREEN);
-	s[1] = new Snake(3, Point(70, 9), Color::LIGHTBLUE, 2, '#');
+	snakes = new Snake*[2];
+	snakes[0] = new Snake(3, { 10, 9 }, Color::LIGHTGREEN,3,'@');
+	snakes[1] = new Snake(3, { 70, 9 }, Color::LIGHTBLUE, 2, '#');
 	randNumbers = new randNum*[60];
 	stack = new Bullet*[gameStackPhSize];
+	creatures = new BasicOBJ*[5];
 	screen = new Screen;
 	mission = new Mission;
 }
 
 TheSnakesGame::~TheSnakesGame() //d'tor
 {
-	delete s[0];
-	delete s[1];
-	delete[] s;
+	delete snakes[0];
+	delete snakes[1];
+	delete[] snakes;
 	delete screen;
 	delete mission;
 	delete[] randNumbers;
 	delete[] stack;
+	delete[] creatures;
 }
+
+void TheSnakesGame::checkSolveForAll(){
+	for (int i = 0; i < randNumSize; i++){
+		if (randNumbers[i]->checkMission())
+			randNumbers[i]->setSolve(true);
+		else
+			randNumbers[i]->setSolve(false);
+	}
+}
+
+Point** TheSnakesGame::getSolvers(int *size){
+	Point **res;
+	size = 0;
+	for (int i = 0; i < randNumSize; i++){
+		if (randNumbers[i]->getSolve()){
+			size++;
+			//res = new Point*[size]
+		}
+	}
+	return res;
+}
+
 void TheSnakesGame::printCharOnBoard(const Point& p, char ch){
 	board[p.getY()][p.getX()] = ch;
 }
@@ -39,7 +64,7 @@ void TheSnakesGame::deleteRandNum(randNum *num){
 	for (int i = 0; i < 60 && !found; i++){
 		if (randNumbers[i] == num){
 			found = true;
-			swapRandNum(randNumbers, randNumSize - 1,i);
+			myswap(randNumbers[randNumSize - 1], randNumbers[i]);
 			randNumbers[randNumSize - 1]->~randNum();
 			delete randNumbers[randNumSize - 1];
 			randNumSize--;
@@ -49,8 +74,7 @@ void TheSnakesGame::deleteRandNum(randNum *num){
 
 void TheSnakesGame::clearBulletsFromGame(){
 	for (int i = 0; i < gameStackLogSize; i++){
-		printCharOnBoard(stack[i]->getLoc(), ' ');
-		printCharOnConsole(stack[i]->getLoc(), ' ');
+		stack[i]->cleanOBJfromGame();
 		delete stack[i];
 	}
 	gameStackLogSize = 0;
@@ -71,9 +95,8 @@ void TheSnakesGame::shootsMove(){
 					deleteRandNum(num);
 					num = nullptr;
 				}
-				printCharOnBoard(stack[i]->getLoc(), ' ');
-				printCharOnConsole(stack[i]->getLoc(), ' ');
-				swapBulletinStack(i, gameStackLogSize - 1);
+				stack[i]->cleanOBJfromGame();
+				myswap(stack[i], stack[gameStackLogSize - 1]);
 				delete stack[gameStackLogSize - 1];
 				gameStackLogSize--;
 
@@ -81,6 +104,7 @@ void TheSnakesGame::shootsMove(){
 		}
 	}
 }
+
 void TheSnakesGame::shoot(Snake *s){
 	Bullet **newstack;
 	if (gameStackLogSize == gameStackPhSize){
@@ -93,22 +117,22 @@ void TheSnakesGame::shoot(Snake *s){
 	}
 
 	stack[gameStackLogSize++] = new Bullet(s);
-	stack[gameStackLogSize - 1]->move();
+	stack[gameStackLogSize - 1]->setGame(this);
 }
 
 Snake* TheSnakesGame::checkSnakeOnBoard(Point p){
 	char ch;
 	ch = board[p.getY()][p.getX()];
-	if (ch == s[0]->getSign())
-		return s[0];
-	else if (ch == s[1]->getSign())
-		return s[1];
+	if (ch == snakes[0]->getSign())
+		return snakes[0];
+	else if (ch == snakes[1]->getSign())
+		return snakes[1];
 	else
 		return nullptr;
 }
 
 bool TheSnakesGame::isSnake(const Point& p) {
-	if (board[p.getY()][p.getX()] == s[0]->getSign() || board[p.getY()][p.getX()] == s[1]->getSign())
+	if (board[p.getY()][p.getX()] == snakes[0]->getSign() || board[p.getY()][p.getX()] == snakes[1]->getSign())
 		return true;
 	else
 		return false;
@@ -135,8 +159,7 @@ void TheSnakesGame::destroyHitBullets(){
 	for (int i = 0; i < gameStackLogSize; i++)
 	{
 		if (stack[i]->hit()){
-			printCharOnBoard(stack[i]->getLoc(), ' ');
-			printCharOnConsole(stack[i]->getLoc(), ' ');
+			stack[i]->cleanOBJfromGame();
 			swapBulletinStack(i, gameStackLogSize - 1);
 			delete stack[gameStackLogSize - 1];
 			gameStackLogSize--;
@@ -163,7 +186,7 @@ void TheSnakesGame::AfterMissionBoard() {
 	gotoxy(0, 0);
 	clearHalfRow();
 	clearConsoleAndBoard();
-	printRelevant(s[0]->getSize(), s[1]->getSize());
+	printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 	cout.flush();
 	clearBulletsFromGame();
 	resetPosAndDir();
@@ -175,10 +198,7 @@ void TheSnakesGame::setBoard(const char* boardToCopy[ROWS])
 	for (int i = 0; i < ROWS; i++)
 	{
 		for (int j = 0; j < COLS; j++)
-		{
 			board[i][j] = boardToCopy[i][j];
-			originalBoard[i][j] = board[i][j];
-		}
 		board[i][COLS] = '\0';
 	}
 }
@@ -196,10 +216,21 @@ void TheSnakesGame::init()
 		}
 		board[i][COLS] = '\0';
 	}
-	s[0]->setGame(this);
-	s[1]->setGame(this);
-	s[0]->setArrowKeys("wxadz");
-	s[1]->setArrowKeys("imjln");
+	snakes[0]->setGame(this);
+	snakes[1]->setGame(this);
+	snakes[0]->setArrowKeys("wxadz");
+	snakes[1]->setArrowKeys("imjln");
+	creaturesCreator();
+}
+
+void TheSnakesGame::creaturesCreator(){
+	creatures[0] = new numEater();
+	creatures[1] = new rowFly({ 30, 23 },RIGHT,true);
+	creatures[2] = new rowFly({ 50, 15 },LEFT);
+	creatures[3] = new colFly({ 25, 23 },UP);
+	creatures[4] = new colFly({ 55, 15 },DOWN,true);
+	for (int i = 0; i < 5; i++)
+		creatures[i]->setGame(this);
 }
 
 bool TheSnakesGame::isSpotFree(const Point& p)
@@ -211,21 +242,21 @@ bool TheSnakesGame::isSpotFree(const Point& p)
 }
 
 void TheSnakesGame::resetSize() {
-	s[0]->setSize(3);
-	s[1]->setSize(3);
+	snakes[0]->setSize(3);
+	snakes[1]->setSize(3);
 }
 
 void TheSnakesGame::resetPosAndDir() {
-	s[0]->setPosition(10, 9);
-	s[0]->setDirection(3);
-	s[1]->setPosition(70, 9);
-	s[1]->setDirection(2);
-	s[0]->setGame(this);
-	s[1]->setGame(this);
-	s[0]->setFreeze(false);
-	s[1]->setFreeze(false);
-	s[0]->reload(5);
-	s[1]->reload(5);
+	snakes[0]->setPosition(10, 9);
+	snakes[0]->setDirection(3);
+	snakes[1]->setPosition(70, 9);
+	snakes[1]->setDirection(2);
+	snakes[0]->setGame(this);
+	snakes[1]->setGame(this);
+	snakes[0]->setFreeze(false);
+	snakes[1]->setFreeze(false);
+	snakes[0]->reload(5);
+	snakes[1]->reload(5);
 }
 randNum* TheSnakesGame::isRandNum(const Point& p) {
 	int randNumX, randNumY;
@@ -263,13 +294,6 @@ void TheSnakesGame::clearConsoleAndBoard() {
 			board[i][j] = ' ';
 		}
 	}
-}
-
-void TheSnakesGame::swapRandNum(randNum a, randNum b)
-{
-	randNum temp(a);
-	a = b;
-	b = temp;
 }
 
 void TheSnakesGame::printRandNumers(randNum** arr) {
@@ -318,6 +342,7 @@ void TheSnakesGame::changeMission() {
 	delete mission;
 	mission = new Mission(lastMissionNum);
 }
+
 
 void TheSnakesGame::swapRandNum(randNum** arr, int a, int b)
 {
@@ -411,7 +436,13 @@ void TheSnakesGame::unFreezeSnake(Snake* s){
 	s->setPosition(p);
 }
 
-
+void TheSnakesGame::refresh(){
+	changeMission();
+	checkSolveForAll();
+	deleteHalfofRandNum(randNumbers);
+	AfterMissionBoard();
+	printRandNumers(randNumbers);
+}
 void TheSnakesGame::run()
 {
 	BOOL finishGame = FALSE;
@@ -436,26 +467,26 @@ void TheSnakesGame::run()
 			}
 			count++;
 			key = _getch();
-			if ((dir = s[0]->getDirection(key)) != -1)
-				s[0]->setDirection(dir);
-			else if ((dir = s[1]->getDirection(key)) != -1)
-				s[1]->setDirection(dir);
-			s[0]->shoot(key);
-			s[1]->shoot(key);
-			if (s[0]->isFreeze()){
+			if ((dir = snakes[0]->getDirection(key)) != -1)
+				snakes[0]->setDirection(dir);
+			else if ((dir = snakes[1]->getDirection(key)) != -1)
+				snakes[1]->setDirection(dir);
+			snakes[0]->shoot(key);
+			snakes[1]->shoot(key);
+			if (snakes[0]->isFreeze()){
 				freeze1++;
 				if (freeze1 == 25){
-					s[0]->setFreeze(false);
-					unFreezeSnake(s[0]);
+					snakes[0]->setFreeze(false);
+					unFreezeSnake(snakes[0]);
 				}
 			}
 			else
 				freeze1 = 0;
-			if (s[1]->isFreeze()){
+			if (snakes[1]->isFreeze()){
 				freeze2++;
 				if (freeze2 == 25){
-					s[1]->setFreeze(false);
-					unFreezeSnake(s[1]);
+					snakes[1]->setFreeze(false);
+					unFreezeSnake(snakes[1]);
 				}
 			}
 			else
@@ -463,62 +494,59 @@ void TheSnakesGame::run()
 		}
 		shootsMove();
 		destroyHitBullets();
+		for (int i = 1; i < 5; i++){
+			CurrNum = creatures[i]->move();
+			if (CurrNum != nullptr){
+				deleteRandNum(CurrNum);
+				CurrNum = nullptr;
+				}
+		}
 		if (randNumSize >= 60) { //end of mission - lack of time
 			printNoTime();
 			lookForAns(randNumbers);
-			changeMission();
-			deleteHalfofRandNum(randNumbers);
-			AfterMissionBoard();
-			printRandNumers(randNumbers);
+			refresh();
 			key = 0;
 		}
-		if (!(s[0]->isFreeze()))
-			CurrNum = s[0]->move();
+		if (!(snakes[0]->isFreeze()))
+			CurrNum = snakes[0]->move();
 		if (CurrNum != nullptr) {
 			if (mission->isMissionOK(mission->getMissionNum(), CurrNum->getVal())) {
 				printGoodJob();
-				s[0]->changeSize(1);
+				snakes[0]->changeSize(1);
 			}
 			else {
-				s[1]->changeSize(1);
+				snakes[1]->changeSize(1);
 				lookForAns(randNumbers);
 			}
-			deleteHalfofRandNum(randNumbers);
-			changeMission();
-			AfterMissionBoard();
-			printRandNumers(randNumbers);
+			refresh();
 			key = 0;
 		}
-		if (!(s[1]->isFreeze()))
-			CurrNum = s[1]->move();
+		if (!(snakes[1]->isFreeze()))
+			CurrNum = snakes[1]->move();
 		if (CurrNum != nullptr) {
 			if (mission->isMissionOK(mission->getMissionNum(), CurrNum->getVal())) {
 				printGoodJob();
-				s[1]->changeSize(1);
+				snakes[1]->changeSize(1);
 			}
 			else {
 				lookForAns(randNumbers);
-				s[0]->changeSize(1);
+				snakes[0]->changeSize(1);
 			}
-			deleteHalfofRandNum(randNumbers);
-			changeMission();
-			AfterMissionBoard();
-			printRandNumers(randNumbers);
+			refresh();
 			key = 0;
 		}
-		if (s[0]->getSize() == 12 || s[0]->getSize() == 0)
+		if (snakes[0]->getSize() == 12 || snakes[1]->getSize() == 12) // someone win
 		{
 			gotoxy(0, 2);
-			cout << "Player1 ";
-			finishGame = checkLoseOrWin(s[0]->getSize());
-			Sleep(1000);
-			key = BeginScreenSwitch();
-		}
-		else if (s[1]->getSize() == 12 || s[1]->getSize() == 0)
-		{
-			gotoxy(0, 2);
-			cout << "Player2 ";
-			finishGame = checkLoseOrWin(s[1]->getSize());
+			cout << "Player";
+			if (snakes[0]->getSize() == 12){
+				cout << "1 ";
+				finishGame = checkLoseOrWin(snakes[0]->getSize());
+			}
+			else {
+				cout << "2 ";
+				finishGame = checkLoseOrWin(snakes[1]->getSize());
+			}
 			Sleep(1000);
 			key = BeginScreenSwitch();
 		}
@@ -557,7 +585,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 	case(3) :
 		//resume game
 		clearConsoleAndBoard();
-		printRelevant(s[0]->getSize(), s[1]->getSize());
+		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		printRandNumers(randNumbers);
 		key = 0;
 		break;
@@ -567,7 +595,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 		deleteAllRandNum(randNumbers);
 		clearBulletsFromGame();
 		resetPosAndDir();
-		printRelevant(s[0]->getSize(), s[1]->getSize());
+		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		restartClock();
 		key = 0;
 		break;
@@ -577,8 +605,9 @@ char TheSnakesGame::PauseScreenSwitch() {
 		deleteAllRandNum(randNumbers);
 		clearBulletsFromGame();
 		changeMission();
+		checkSolveForAll();
 		resetPosAndDir();
-		printRelevant(s[0]->getSize(), s[1]->getSize());
+		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		key = 0;
 		break;
 	case(6) :
@@ -588,7 +617,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 		clearBulletsFromGame();
 		resetSize();
 		resetPosAndDir();
-		printRelevant(s[0]->getSize(), s[1]->getSize());
+		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		key = 1;
 		break;
 	}//switch
@@ -611,7 +640,7 @@ char TheSnakesGame::BeginScreenSwitch() {
 			restartClock();
 			resetSize();
 			resetPosAndDir();
-			printRelevant(s[0]->getSize(), s[1]->getSize());
+			printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 			key = 1;
 			break;
 		case(9) :
