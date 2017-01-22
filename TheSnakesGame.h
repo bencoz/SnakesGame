@@ -5,25 +5,26 @@
 #include "io_utils.h"
 #include "Snake.h"
 #include "Screen.h"
-#include "mission.h"
+#include "missions.h"
+#include "MissionManager.h"
 
 class Bullet;
 class randNum;
 enum { ROWS = 24, COLS = 80 };
 enum { ESC = 27 };
-class Mission;
+class MissionManager;
 class Screen;
 class Replay;
 
 class TheSnakesGame {
-	Replay* rep;
+	Replay *rep;
+	MissionManager **missions;
 	Screen *screen;
-	Mission *mission;
 	Snake **snakes;
 	Bullet **stack;
 	randNum** randNumbers;
 	BasicOBJ **creatures;
-	int gameStackLogSize=0, gameStackPhSize=1;
+	int gameStackLogSize = 0, gameStackPhSize = 1, difficulty, missPos, missStackLogSize = 0, missStackPhSize = 1;
 	static int randNumSize;
 	char board[ROWS][COLS + 1];	// this is the actual board we play on, i.e. changes on board are done here
 	static unsigned int clock;
@@ -44,8 +45,8 @@ public:
 	void resetSize();
 	void printRandNumers(randNum** arr);
 	void printGoodJob();
-	void printNumEaterEnd();
 	void printNoTime();
+	void printNumEaterEnd();
 	void changeMission();
 	bool isSnake(const Point& p);
 	void clearConsoleAndBoard();
@@ -74,13 +75,13 @@ public:
 	void clearBulletsFromGame();
 	bool checkShootOnBoard(Point p);
 	bool checkNumEaterOnBoard(Point p);
-	void setBulletHit(Point p, int flag=0); // if flag > 0 then shooter gets a realod
-	bool setCreatureHit(Point p); // returns true if the creature was hit otherwise false.
+	void setBulletHit(Point p,int flag =0);
+	void setCreatureHit(Point p);
 	void destroyHitBullets();
 	void destroyHitCreatures();
 	void reviveCreatures();
-	Mission* getMission(){
-		return mission;
+	MissionManager* getMission(){
+		return missions[missPos];
 	}
 	void checkSolveForAll();
 	void creaturesCreator();
@@ -88,6 +89,9 @@ public:
 	void realaseSolvers(Point **arr, int size);
 	void killAllOBJS();
 	void killCreatures();
+	void readingMissions(); 
+	void missionCreator(ifstream& file, char identifer,int pos);
+	void chooseDifficulty();
 };
 
 template<class T>

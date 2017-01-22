@@ -16,7 +16,7 @@ TheSnakesGame::TheSnakesGame() //c'tor
 	stack = new Bullet*[gameStackPhSize];
 	creatures = new BasicOBJ*[5];
 	screen = new Screen;
-	mission = new Mission;
+	missions = new MissionManager*[missStackPhSize];
 	rep = new Replay;
 }
 
@@ -26,22 +26,79 @@ TheSnakesGame::~TheSnakesGame() //d'tor
 	delete snakes[1];
 	delete[] snakes;
 	delete screen;
-	delete mission;
 	killAllOBJS();
 	delete[] randNumbers;
 	delete[] stack;
 	delete[] creatures;
+	for (int i = 0; i < missStackLogSize; i++)
+		delete[]missions[i];
+	delete[]missions;
 }
-void TheSnakesGame::killAllOBJS(){
+
+void TheSnakesGame::killAllOBJS() {
 	deleteAllRandNum(randNumbers);
 	clearBulletsFromGame();
 	killCreatures();
 }
 
-void TheSnakesGame::killCreatures(){
+void TheSnakesGame::killCreatures() {
 	for (int i = 0; i < 5; ++i)
 		delete creatures[i];
 }
+
+
+void TheSnakesGame::readingMissions() {
+	char identifer, dummy;
+	ifstream read;
+	MissionManager **newmissions;
+	if (difficulty == 1)
+		read.open("easyMissions.txt");
+	else if (difficulty == 2)
+		read.open("mediumMissions.txt");
+	else
+		read.open("hardMissions.txt");
+	while (read.good())
+	{
+		read.get(identifer);
+		read.get(dummy);
+		missionCreator(read, identifer, missStackLogSize);
+		missStackLogSize++;
+		if (missStackLogSize == missStackPhSize)
+		{
+			missStackPhSize *= 2;
+			newmissions = new MissionManager*[missStackPhSize];
+			for (int i = 0; i < missStackLogSize; i++)
+				newmissions[i] = missions[i];
+			delete missions;
+			missions = newmissions;
+		}
+		read.get(dummy);
+	}
+}
+
+void TheSnakesGame::missionCreator(ifstream& file, char identifer, int pos) {
+	int a, b;
+	char *description = new char[50];
+	file >> description >> a >> b;
+	switch (identifer) {
+	case('A') :
+		missions[pos] = new divideByXnotByY(description, a, b);
+		break;
+	case('B') :
+		missions[pos] = new biggerThanXandSmallerThanY(description, a, b);
+		break;
+	case('C') :
+		missions[pos] = new dividedByX(description, a, b);
+		break;
+	case('D') :
+		missions[pos] = new Equation(description, a, b);
+		break;
+	case('E') :
+		missions[pos] = new SquareOfX(description, a, b);
+		break;
+	}
+}
+
 void TheSnakesGame::checkSolveForAll(){
 	for (int i = 0; i < randNumSize; i++){
 		if (randNumbers[i]->checkMission())
@@ -51,11 +108,11 @@ void TheSnakesGame::checkSolveForAll(){
 	}
 }
 
-Point** TheSnakesGame::getSolvers(int *size){
-	Point **res=nullptr;
+Point** TheSnakesGame::getSolvers(int *size) {
+	Point **res = nullptr;
 	*size = 0;
-	int i, write,mySize=0;
-	for (i = 0; i < randNumSize; i++){
+	int i, write, mySize = 0;
+	for (i = 0; i < randNumSize; i++) {
 		if (*randNumbers[i]->getSolve())
 			mySize++;
 	}
@@ -63,8 +120,8 @@ Point** TheSnakesGame::getSolvers(int *size){
 		return res;
 	else
 		res = new Point*[mySize];
-	for (i = 0, write = 0; i < randNumSize; i++){
-		if (*randNumbers[i]->getSolve()){
+	for (i = 0, write = 0; i < randNumSize; i++) {
+		if (*randNumbers[i]->getSolve()) {
 			res[write] = randNumbers[i]->getPointPointer();
 			write++;
 		}
@@ -73,7 +130,7 @@ Point** TheSnakesGame::getSolvers(int *size){
 	return res;
 }
 
-void TheSnakesGame::realaseSolvers(Point **arr, int size){
+void TheSnakesGame::realaseSolvers(Point **arr, int size) {
 	for (int i = 0; i < size; i++)
 		delete arr[i];
 	delete arr;
@@ -90,7 +147,7 @@ void TheSnakesGame::printCharOnConsole(const Point& p, char ch){
 }
 void TheSnakesGame::deleteRandNum(randNum *num){
 	bool found = false;
-	for (int i = 0; i < randNumSize && !found; i++){
+	for (int i = 0; i < 60 && !found; i++){
 		if (randNumbers[i] == num){
 			found = true;
 			myswap(randNumbers[randNumSize - 1], randNumbers[i]);
@@ -106,7 +163,6 @@ void TheSnakesGame::clearBulletsFromGame(){
 		delete stack[i];
 	gameStackLogSize = 0;
 }
-
 
 void TheSnakesGame::shootsMove(){
 	randNum* num = nullptr;
@@ -126,11 +182,12 @@ void TheSnakesGame::shootsMove(){
 		}
 	}
 }
-void TheSnakesGame::creaturesMove(){
+
+void TheSnakesGame::creaturesMove() {
 	randNum* num;
-	for (int i = 0; i < 5; ++i){
-		if (creatures[i] != nullptr){ // creature is not dead
-			if (typeid(creatures[i]) == typeid(numEater*) || typeid(creatures[i]) == typeid(rowFly*)){ // creatures who is moving twice
+	for (int i = 0; i < 5; ++i) {
+		if (creatures[i] != nullptr) { // creature is not dead
+			if (typeid(creatures[i]) == typeid(numEater*) || typeid(creatures[i]) == typeid(rowFly*)) { // creatures who is moving twice
 				num = creatures[i]->move();
 				if (num != nullptr)
 					deleteRandNum(num);
@@ -175,43 +232,46 @@ bool TheSnakesGame::isSnake(const Point& p) {
 		return false;
 }
 
+
+
 bool TheSnakesGame::checkShootOnBoard(Point p){
 	char ch;
 	ch = board[p.getY()][p.getX()];
 	return (ch == '*' ? true : false);
 }
-bool TheSnakesGame::checkNumEaterOnBoard(Point p){
+
+bool TheSnakesGame::checkNumEaterOnBoard(Point p) {
 	char ch;
 	ch = board[p.getY()][p.getX()];
 	return (ch == '%' ? true : false);
 }
 
-void TheSnakesGame::setBulletHit(Point p,int flag){ // if flag > 0 then shooter gets a realod
+void TheSnakesGame::setBulletHit(Point p,int flag){
 	int pos = -1; 
 	for (int i = 0; i < gameStackLogSize; i++)
 	{
 		if (stack[i]->getLoc() == p)
 			pos = i;
 	}
-	if (pos != -1){
+	if (pos != -1) {
 		stack[pos]->setHit(true);
 		if (flag)
 			stack[pos]->getShooter()->reload();
 	}
 }
 
-bool TheSnakesGame::setCreatureHit(Point p){
-	bool res=false;
+bool TheSnakesGame::setCreatureHit(Point p) {
+	bool res = false;
 	numEater* a;
 	colFly* b;
-	for (int i = 0; i < 5; i++){
-		if (creatures[i]){
-			if (creatures[i]->getLoc() == p){
-				if (a = dynamic_cast<numEater*>(creatures[i])){
+	for (int i = 0; i < 5; i++) {
+		if (creatures[i]) {
+			if (creatures[i]->getLoc() == p) {
+				if (a = dynamic_cast<numEater*>(creatures[i])) {
 					a->setHit(true);
 					res = true;
 				}
-				if (b = dynamic_cast<colFly*>(creatures[i])){
+				if (b = dynamic_cast<colFly*>(creatures[i])) {
 					b->setHit(true);
 					res = true;
 				}
@@ -225,39 +285,41 @@ void TheSnakesGame::destroyHitBullets(){
 	for (int i = 0; i < gameStackLogSize; i++)
 	{
 		if (stack[i]->hit()){
+			stack[i]->cleanOBJfromGame();
 			myswap(stack[i], stack[gameStackLogSize - 1]);
 			delete stack[gameStackLogSize - 1];
 			gameStackLogSize--;
 		}
 	}
 }
-void TheSnakesGame::destroyHitCreatures(){
+
+void TheSnakesGame::destroyHitCreatures() {
 	colFly* a;
 	numEater* b;
 	int pos = -1;
-	for (int i = 0; i < 5; ++i, pos = -1){
-		if (creatures[i]){
+	for (int i = 0; i < 5; ++i, pos = -1) {
+		if (creatures[i]) {
 			a = dynamic_cast<colFly*>(creatures[i]);
-			if (a){
+			if (a) {
 				if (*a->hit())
 					pos = i;
 			}
 			b = dynamic_cast<numEater*>(creatures[i]);
-			if (b){
+			if (b) {
 				if (*b->hit())
 					pos = i;
 			}
 		}
-		if (pos != -1){
+		if (pos != -1) {
 			delete creatures[pos];
 			creatures[pos] = nullptr;
 		}
 	}
 }
-void TheSnakesGame::reviveCreatures(){
-	for (int i = 0; i < 5; i++){
+void TheSnakesGame::reviveCreatures() {
+	for (int i = 0; i < 5; i++) {
 		if (creatures[i] == nullptr)
-			switch (i)  {
+			switch (i) {
 			case(0) :
 				creatures[0] = new numEater();
 				break;
@@ -272,11 +334,10 @@ void TheSnakesGame::reviveCreatures(){
 				break;
 			case(4) :
 				creatures[4] = new colFly({ 55, 15 }, DOWN, true);
-		}
+			}
 		creatures[i]->setGame(this);
 	}
 }
-
 
 void TheSnakesGame::printClock(){
 	clock++;
@@ -288,7 +349,9 @@ void TheSnakesGame::printClock(){
 
 void TheSnakesGame::clearHalfRow() {
 	for (int i = 0; i < COLS / 2; i++)
+	{
 		cout << " ";
+	}
 }
 
 void TheSnakesGame::AfterMissionBoard() { 
@@ -314,7 +377,7 @@ void TheSnakesGame::setBoard(const char* boardToCopy[ROWS])
 void TheSnakesGame::init()
 {
 	gotoxy(0, 0);
-	mission->printMissionName(mission->getMissionNum());
+	missions[missPos]->printDescript();
 	for (int i = 1; i < ROWS; i++)
 	{
 		for (int j = 0; j < COLS; j++)
@@ -367,7 +430,6 @@ void TheSnakesGame::resetPosAndDir() {
 	snakes[0]->reload(5);
 	snakes[1]->reload(5);
 }
-
 randNum* TheSnakesGame::isRandNum(const Point& p) {
 	int randNumX, randNumY;
 	bool found = false;
@@ -416,7 +478,7 @@ void TheSnakesGame::printRandNumers(randNum** arr) {
 void TheSnakesGame::printRelevant(int player1, int player2) {
 	setTextColor(WHITE);
 	gotoxy(0, 0);
-	mission->printMissionName(mission->getMissionNum());
+	missions[missPos]->printDescript();
 	gotoxy(61, 0);
 	cout << "TIME:     ";
 	gotoxy(66, 0);
@@ -440,13 +502,6 @@ void TheSnakesGame::printGoodJob() {
 	Sleep(1000);
 }
 
-void TheSnakesGame::printNumEaterEnd() {
-	gotoxy(0, 2);
-	setTextColor(LIGHTMAGENTA);
-	cout << "you can't F*** with NumEater !!!";
-	Sleep(1000);
-}
-
 void TheSnakesGame::printNoTime() {
 	gotoxy(0, 2);
 	setTextColor(LIGHTMAGENTA);
@@ -454,12 +509,19 @@ void TheSnakesGame::printNoTime() {
 	Sleep(1000);
 }
 
-void TheSnakesGame::changeMission() {
-	int lastMissionNum = mission->getMissionNum();
-	delete mission;
-	mission = new Mission(lastMissionNum);
+void TheSnakesGame::printNumEaterEnd() {
+	gotoxy(0, 2);
+	setTextColor(LIGHTMAGENTA);
+	cout << "you can't F*** with NumEater !!!";
+	Sleep(1000);
 }
 
+void TheSnakesGame::changeMission() {
+	int lastMissionPos = missPos;
+	do {
+		missPos = rand() % missStackLogSize;
+	} while (lastMissionPos == missPos);
+}
 
 void TheSnakesGame::deleteHalfofRandNum(randNum** arr)
 {
@@ -500,18 +562,18 @@ bool TheSnakesGame::printRandNum(randNum* rand) //print to board and to console 
 	if (digNum == 3) {
 		board[rand->getRandY()][rand->getRandX()] = (char)('0' + (num / 100));
 		rep->addChange({ rand->getRandX(), rand->getRandY() }, (char)('0' + (num / 100)));
-		board[rand->getRandY()][rand->getRandX() + 1] = (char)('0'+((num / 10) % 10));
-		rep->addChange({ rand->getRandX()+1, rand->getRandY() }, (char)('0' + ((num / 10) % 10)));
-		board[rand->getRandY()][rand->getRandX() + 2] = (char)('0'+(num % 10));
+		board[rand->getRandY()][rand->getRandX() + 1] = (char)('0' + ((num / 10) % 10));
+		rep->addChange({ rand->getRandX() + 1, rand->getRandY() }, (char)('0' + ((num / 10) % 10)));
+		board[rand->getRandY()][rand->getRandX() + 2] = (char)('0' + (num % 10));
 		rep->addChange({ rand->getRandX() + 2, rand->getRandY() }, (char)('0' + (num % 10)));
 	}
 	else if (digNum == 2) {
-		board[rand->getRandY()][rand->getRandX()] = (char)('0'+((num / 10) % 10));
+		board[rand->getRandY()][rand->getRandX()] = (char)('0' + ((num / 10) % 10));
 		rep->addChange({ rand->getRandX(), rand->getRandY() }, (char)('0' + ((num / 10) % 10)));
-		board[rand->getRandY()][rand->getRandX() + 1] = (char)('0'+(num % 10));
+		board[rand->getRandY()][rand->getRandX() + 1] = (char)('0' + (num % 10));
 		rep->addChange({ rand->getRandX() + 1, rand->getRandY() }, (char)('0' + (num % 10)));
 	}
-	else{
+	else {
 		board[rand->getRandY()][rand->getRandX()] = (char)('0' + num);
 		rep->addChange({ rand->getRandX(), rand->getRandY() }, (char)('0' + num));
 	}
@@ -523,13 +585,12 @@ void TheSnakesGame::deleteNumFromBoard(Point& p, int len) {
 	for (int i = 0; i < len; i++)
 		board[p.getY()][p.getX() + i] = ' ';
 }
-
 void TheSnakesGame::lookForAns(randNum** arr)
 {
 	bool found = false;
 	for (int i = 0; i < randNumSize && !found; i++)
 	{
-		if (*arr[i]->getSolve())
+		if (missions[missPos]->isMissionOK(arr[i]->getVal()))
 		{
 			found = true;
 			arr[i]->flicker();
@@ -554,13 +615,13 @@ void TheSnakesGame::unFreezeSnake(Snake* s){
 void TheSnakesGame::refresh(){
 	changeMission();
 	checkSolveForAll();
-	reviveCreatures();
 	deleteHalfofRandNum(randNumbers);
 	AfterMissionBoard();
 	printRandNumers(randNumbers);
 	Sleep(1000);
 	rep->saveState(board);
 }
+
 void TheSnakesGame::run()
 {
 	BOOL finishGame = FALSE;
@@ -622,7 +683,7 @@ void TheSnakesGame::run()
 		if (!(snakes[0]->isFreeze()))
 			CurrNum = snakes[0]->move();
 		if (CurrNum != nullptr) {
-			if (mission->isMissionOK(mission->getMissionNum(), CurrNum->getVal())) {
+			if (missions[missPos]->isMissionOK(CurrNum->getVal())) {
 				printGoodJob();
 				snakes[0]->changeSize(1);
 			}
@@ -647,7 +708,7 @@ void TheSnakesGame::run()
 		if (!(snakes[1]->isFreeze()))
 			CurrNum = snakes[1]->move();
 		if (CurrNum != nullptr) {
-			if (mission->isMissionOK(mission->getMissionNum(), CurrNum->getVal())) {
+			if (missions[missPos]->isMissionOK(CurrNum->getVal())) {
 				printGoodJob();
 				snakes[1]->changeSize(1);
 			}
@@ -754,14 +815,6 @@ char TheSnakesGame::PauseScreenSwitch() {
 		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		key = 1;
 		break;
-	case(7) :
-		//replay last mission
-		clearConsoleAndBoard();
-		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
-		printRandNumers(randNumbers);
-		rep->startReplay();
-		key = 0;
-		break;
 	}//switch
 	return key;
 }
@@ -777,13 +830,14 @@ char TheSnakesGame::BeginScreenSwitch() {
 			break;
 		case(2) :
 			//start new game
+			chooseDifficulty();
+			readingMissions();
 			clearConsoleAndBoard();
 			deleteAllRandNum(randNumbers);
 			restartClock();
 			resetSize();
 			resetPosAndDir();
 			printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
-			rep->saveState(board);
 			key = 1;
 			break;
 		case(9) :
@@ -793,4 +847,21 @@ char TheSnakesGame::BeginScreenSwitch() {
 		}
 	} while (key == 0);
 	return key;
+}
+
+void TheSnakesGame::chooseDifficulty() {
+	gotoxy(0, 0);
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < COLS; j++)
+			cout << " ";
+	gotoxy(0, 0);
+	cout << "Choose difficulty:" << endl;
+	cout << "For easy level press 1" << endl;
+	cout << "For medium level press 2" << endl;
+	cout << "For hard level press 3" << endl;
+	do {
+		cin >> difficulty;
+		if (difficulty != 3 && difficulty != 2 && difficulty != 1)
+			cout << "Invalid input, try again please" << endl;
+	} while (difficulty < 1 || difficulty > 3);
 }
