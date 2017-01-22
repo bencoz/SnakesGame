@@ -1,0 +1,5 @@
+A)DivideByXnotByY 2 5
+B)BiggerThanXsmallerThanY 0 30
+C)DividedByX 2 5
+D)X*Y-Z 1 7
+E)SquareOfX 1 7
