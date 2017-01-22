@@ -7,6 +7,9 @@ randNum* colFly::move(){
 	Snake *s;
 	Point p(getLoc());
 	Point NextP(nextPointX(), nextPointY());
+	if (*hit())
+		return nullptr;
+
 	if (!wallMover){
 		if (NextP.getY() == 23){
 			NextP.set(NextP.getX(), 5);
@@ -28,7 +31,7 @@ randNum* colFly::move(){
 			else { //spot is not free and is not a number and not a snake -> its a bullet
 				if (getTheGame()->checkShootOnBoard(NextP)){
 					wasHit = true;
-					getTheGame()->setBulletHit(NextP);
+					getTheGame()->setBulletHit(NextP,1);
 				}
 				/*else{
 				getTheGame()->checkCreatureOnBoard(NextP);

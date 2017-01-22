@@ -13,7 +13,7 @@ class BasicOBJ {
 	TheSnakesGame* theGame;
 public:
 	BasicOBJ(int _size = 1, const Point& position = { 0, 5 }, Color c = BROWN, int dir = 3, char symb = '@');//c'tor
-	virtual ~BasicOBJ(){ delete[] body; } //d'tor
+	virtual ~BasicOBJ(); //d'tor
 	BasicOBJ(const BasicOBJ& obj); //copy c'tor
 	virtual randNum* move() = 0;
 	void setGame(TheSnakesGame* _theGame){

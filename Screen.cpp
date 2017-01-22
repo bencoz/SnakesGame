@@ -27,10 +27,11 @@ int Screen::Pause_Screen() {
 	cout << "Press 4 to restart this mission" << endl;
 	cout << "Press 5 to start a new mission" << endl;
 	cout << "Press 6 to start a new game" << endl;
+	cout << "Press 7 to replay last game" << endl;
 	cout.flush();
 	do {
 		key = _getch();
-	} while (key != '6' && key != '5'  && key != '4' && key != '3' && key != '2' && key != '1');
+	} while (key != '7' && key != '6' && key != '5'  && key != '4' && key != '3' && key != '2' && key != '1');
 	return (int)(key - '0');
 }
 

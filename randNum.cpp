@@ -79,6 +79,11 @@ int randNum::setValbyProp(){
 Point& randNum::getPoint(){
 	return loc;
 }
+Point* randNum::getPointPointer(){
+	Point* res = new Point(loc);
+	return res;
+}
+
 bool randNum::isLocOnScreenOk(const randNum* num) {
 	if ((loc.getX() > 76) && (numOfDig >= 3))
 		return false;

@@ -13,8 +13,10 @@ enum { ROWS = 24, COLS = 80 };
 enum { ESC = 27 };
 class Mission;
 class Screen;
+class Replay;
 
 class TheSnakesGame {
+	Replay* rep;
 	Screen *screen;
 	Mission *mission;
 	Snake **snakes;
@@ -34,26 +36,25 @@ public:
 	void run();
 	bool printRandNum(randNum* s);
 	void deleteNumFromBoard(Point& p, int len);
-	void printSnakeOnBoard(int x, int y, char ch);
 	void deleteHalfofRandNum(randNum**);
 	void lookForAns(randNum**);
-	void swapRandNum(randNum** arr, int a, int b);
-	void TheSnakesGame::AfterMissionBoard();
-	void TheSnakesGame::clearHalfRow();
+	void AfterMissionBoard();
+	void clearHalfRow();
 	void printClock();
-	void TheSnakesGame::resetSize();
+	void resetSize();
 	void printRandNumers(randNum** arr);
 	void printGoodJob();
+	void printNumEaterEnd();
 	void printNoTime();
 	void changeMission();
 	bool isSnake(const Point& p);
 	void clearConsoleAndBoard();
 	void printRelevant(int player1, int player2);
-	char TheSnakesGame::BeginScreenSwitch();
-	char TheSnakesGame::PauseScreenSwitch();
-	void TheSnakesGame::resetPosAndDir();
+	char BeginScreenSwitch();
+	char PauseScreenSwitch();
+	void resetPosAndDir();
 	void deleteAllRandNum(randNum**);
-	BOOL TheSnakesGame::checkLoseOrWin(int size);
+	BOOL checkLoseOrWin(int size);
 	void restartClock(){
 		gotoxy(66,0);
 		cout << "    ";
@@ -66,20 +67,27 @@ public:
 	void printCharOnConsole(const Point& p, char ch);
 	void shoot(Snake *s);
 	void shootsMove();
+	void creaturesMove();
 	void deleteRandNum(randNum *num);
-	void swapBulletinStack(int a, int b);
 	Snake *checkSnakeOnBoard(Point);
 	void unFreezeSnake(Snake* s);
 	void clearBulletsFromGame();
 	bool checkShootOnBoard(Point p);
-	void setBulletHit(Point p);
+	bool checkNumEaterOnBoard(Point p);
+	void setBulletHit(Point p, int flag=0); // if flag > 0 then shooter gets a realod
+	bool setCreatureHit(Point p); // returns true if the creature was hit otherwise false.
 	void destroyHitBullets();
+	void destroyHitCreatures();
+	void reviveCreatures();
 	Mission* getMission(){
 		return mission;
 	}
 	void checkSolveForAll();
 	void creaturesCreator();
 	Point** getSolvers(int *size);
+	void realaseSolvers(Point **arr, int size);
+	void killAllOBJS();
+	void killCreatures();
 };
 
 template<class T>

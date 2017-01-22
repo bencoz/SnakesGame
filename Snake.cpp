@@ -2,38 +2,39 @@
 #include "TheSnakesGame.h"
 
 
-//Snake::Snake(int size, const Point& p, Color c, int dir, char sign) {}
-/*Snake::Snake(const Snake& s)
-{
-	stackSize = s.stackSize;
-	freeze = s.freeze;
-	for (int i = 0; i < 5; i++){
-		arrowKeys[i] = s.arrowKeys[i];
-	}
-}*/
-/*Snake::~Snake(){
-	for (int i = 0; i < size; i++)
-		theGame->printCharOnBoard(body[i], ' ');
-	delete[] body;
-}*/
-
 randNum* Snake::move(){
 	randNum* res = nullptr;
 	Point p;
 	Point NextP;
+	Snake *s = nullptr;
 	p = getLoc();
 	NextP = p.next(BasicOBJ::getDirection());
+
 	if (!(getTheGame()->isSpotFree(NextP))){
 		res = getTheGame()->isRandNum(NextP);
-		if (res == nullptr)//not a rand number -> its a other snake.
-			setDirection(STOP);
-	}
-	
+		if (res == nullptr){//not a rand number -> its a other snake.
+			s = getTheGame()->checkSnakeOnBoard(NextP);
+			if (s != nullptr)
+				setDirection(STOP);
+			else{ //spot is not free and is not a number and not a snake
+				if (getTheGame()->checkShootOnBoard(NextP))
+					getTheGame()->setBulletHit(NextP);
+				else{
+					if (getTheGame()->checkNumEaterOnBoard(NextP)){
+						getTheGame()->printNumEaterEnd();
+						getTheGame()->refresh();
+					}
+				}//NumEater
+			}//not free, not number, not snake
+		}//not free, not number
+	}//not free
+
 	if (BasicOBJ::getDirection() != STOP){
 		getTail().draw(' ');
 		getTheGame()->printCharOnBoard(getTail(), ' ');
 		moveBody();
 	}
+
 	getLoc().move(BasicOBJ::getDirection());
 	setTextColor(getColor());
 	getLoc().draw(getSign());

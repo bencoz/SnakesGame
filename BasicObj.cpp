@@ -23,6 +23,10 @@ BasicOBJ::BasicOBJ(const BasicOBJ& obj)
 	for (int i = 0; i < size; i++)
 		body[i] = obj.body[i];
 }
+BasicOBJ::~BasicOBJ(){ 
+	cleanOBJfromGame(); 
+	delete[] body;
+}
 
 void BasicOBJ::setPosition(int x, int y)
 {

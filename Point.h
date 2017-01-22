@@ -5,7 +5,7 @@
 #include "io_utils.h"
 
 using namespace std;
-enum { UP=0, DOWN=1, LEFT=2, RIGHT=3, STOP=4};
+enum Direction{ UP=0, DOWN=1, LEFT=2, RIGHT=3, STOP=4};
 
 class Point {
 	int x, y;

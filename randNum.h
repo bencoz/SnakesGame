@@ -34,14 +34,15 @@ public:
 	void setSolve(int a){
 		a > 0 ? solve = true : solve = false;
 	}
-	bool getSolve(){
-		return solve;
+	bool* const getSolve(){
+		return &solve;
 	}
 	void draw();
 	void flicker();
 	bool isLocOnScreenOk(const randNum*);
 	void setGame(TheSnakesGame* _theGame);
 	Point& getPoint();
+	Point* getPointPointer();
 	void setPrint(){
 		print = true;
 	}

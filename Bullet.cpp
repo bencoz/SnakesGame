@@ -22,6 +22,10 @@ randNum* Bullet::move(){
 			else { //spot is not free and is not a number and not a snake -> its another bullet
 				if (getTheGame()->checkShootOnBoard(NextP))
 					getTheGame()->setBulletHit(NextP);
+				else{
+					if(getTheGame()->setCreatureHit(NextP))
+						Shooter->reload();
+				}
 			}
 		}
 	}

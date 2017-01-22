@@ -21,6 +21,9 @@ public:
 	bool hit(){
 		return wasHit;
 	}
+	Snake* const getShooter(){
+		return Shooter;
+	}
 };
 
 

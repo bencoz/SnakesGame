@@ -10,8 +10,14 @@ public:
 	numEater(Point p = { 10, 19 }, int dir = STOP) : BasicOBJ(1, p, YELLOW, dir, '%'){};
 	virtual randNum* move();
 	Point** getSolutions(int *size);
-	Point calcRoute(Point *target);
+	Direction calcRoute(Point *target);
 	Point* findClosest(Point **arr, int size);
+	void setHit(bool flag){
+		wasHit = flag;
+	}
+	bool* const hit(){
+		return &wasHit;
+	}
 };
 
 class rowFly : public BasicOBJ {
@@ -39,6 +45,12 @@ public:
 	}
 	bool getWallMove(){
 		return wallMover;
+	}
+	void setHit(bool flag){
+		wasHit = flag;
+	}
+	bool* const hit(){
+		return &wasHit;
 	}
 };
 #endif
