@@ -4,7 +4,7 @@
 Equation::Equation(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {
 	int i;
 	Z = rand() % (_Y - _X) + _X;
-	for (i = 0; i < strlen(_description); i++)
+	for (i = 0; i < (int)strlen(_description); i++)
 		if (_description[i] == '+' || _description[i] == '-' || _description[i] == '*' || _description[i] == '/')
 		{
 			if (op1 == NULL)
@@ -24,6 +24,11 @@ void Equation::specialRandom(int num1, int num2) {
 int Equation::calculateEq(const char& op1, const char& op2) {
 	int num4 = 0;
 	int tmp;
+	while (getX()*getY() > 169)
+	{
+		setX(rand() % ((getY() - getX()) / 2) + getX() / 2);
+		setX(rand() % ((getY() - getX()) / 2) + getX() / 2);
+	}
 	do {
 		if (op1 == '/' && op2 == '/')
 		{

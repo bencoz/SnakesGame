@@ -2,13 +2,23 @@
 
 class divideByXnotByY : public MissionManager {
 public:
-	divideByXnotByY(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {};
+	divideByXnotByY(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {
+		while (getX() % getY() == 0)
+			setY(rand() % (_Y - _X) + _X);
+	};
 	virtual bool isMissionOK(int num);
 };
 
 class biggerThanXandSmallerThanY : public MissionManager {
 public:
-	biggerThanXandSmallerThanY(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {};
+	biggerThanXandSmallerThanY(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {
+		if (getX() > getY())
+		{
+			int tmp = getX();
+			setX(getY());
+			setY(tmp);
+		}
+	};
 	virtual bool isMissionOK(int num);
 };
 

@@ -32,9 +32,9 @@ void randNum::setGame(TheSnakesGame* _theGame) {
 }
 
 bool randNum::checkMission(){
-	Mission* m;
+	MissionManager* m;
 	m = thegame->getMission();
-	if (m->isMissionOK(m->getMissionNum(), val)){
+	if (m->isMissionOK(val)){
 		solve = true;
 		return true;
 	}

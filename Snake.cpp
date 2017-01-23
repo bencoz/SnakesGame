@@ -54,7 +54,7 @@ void Snake::setFreeze(int a){
 }
 
 bool Snake::shoot(char key){
-	if ((key == arrowKeys[4]) && (stackSize > 0) && (BasicOBJ::getDirection() != STOP)){
+	if ((key == arrowKeys[4]) && (stackSize > 0) && (BasicOBJ::getDirection() != STOP) && (freeze == false)){
 		stackSize--;
 		getTheGame()->shoot(this);
 		return true;

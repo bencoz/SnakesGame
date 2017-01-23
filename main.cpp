@@ -15,5 +15,6 @@ int main() {
 		game.setBoard(start_board);
 		game.init();
 		game.run();
+		game.killAllOBJS();
 	}
 }

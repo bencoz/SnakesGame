@@ -10,8 +10,7 @@ unsigned int TheSnakesGame::clock;
 TheSnakesGame::TheSnakesGame() //c'tor
 {
 	snakes = new Snake*[2];
-	snakes[0] = new Snake(3, { 10, 9 }, Color::LIGHTGREEN,3,'@');
-	snakes[1] = new Snake(3, { 70, 9 }, Color::LIGHTBLUE, 2, '#');
+	createSnakes();
 	randNumbers = new randNum*[60];
 	stack = new Bullet*[gameStackPhSize];
 	creatures = new BasicOBJ*[5];
@@ -22,20 +21,29 @@ TheSnakesGame::TheSnakesGame() //c'tor
 
 TheSnakesGame::~TheSnakesGame() //d'tor
 {
-	delete snakes[0];
-	delete snakes[1];
 	delete[] snakes;
 	delete screen;
-	killAllOBJS();
+	delete rep;
 	delete[] randNumbers;
 	delete[] stack;
 	delete[] creatures;
 	for (int i = 0; i < missStackLogSize; i++)
-		delete[]missions[i];
-	delete[]missions;
+		delete missions[i];
+	delete[] missions;
+}
+
+void TheSnakesGame::createSnakes(){
+		snakes[0] = new Snake(3, { 10, 9 }, Color::LIGHTGREEN, 3, '@');
+		snakes[1] = new Snake(3, { 70, 9 }, Color::LIGHTBLUE, 2, '#');
+}
+
+void TheSnakesGame::killSnakes(){
+	for (int i = 0; i < 2; ++i)
+		delete snakes[i];
 }
 
 void TheSnakesGame::killAllOBJS() {
+	killSnakes();
 	deleteAllRandNum(randNumbers);
 	clearBulletsFromGame();
 	killCreatures();
@@ -74,6 +82,7 @@ void TheSnakesGame::readingMissions() {
 		}
 		read.get(dummy);
 	}
+	read.close();
 }
 
 void TheSnakesGame::missionCreator(ifstream& file, char identifer, int pos) {
@@ -388,6 +397,7 @@ void TheSnakesGame::init()
 		}
 		board[i][COLS] = '\0';
 	}
+	createSnakes();
 	snakes[0]->setGame(this);
 	snakes[1]->setGame(this);
 	snakes[0]->setArrowKeys("wxadz");
@@ -615,6 +625,7 @@ void TheSnakesGame::unFreezeSnake(Snake* s){
 void TheSnakesGame::refresh(){
 	changeMission();
 	checkSolveForAll();
+	reviveCreatures();
 	deleteHalfofRandNum(randNumbers);
 	AfterMissionBoard();
 	printRandNumers(randNumbers);
@@ -815,6 +826,15 @@ char TheSnakesGame::PauseScreenSwitch() {
 		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		key = 1;
 		break;
+	case(7):
+		//replay last mission
+		clearConsoleAndBoard();
+		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
+		printRandNumers(randNumbers);
+		rep->startReplay();
+		rep->waitForReturn();
+		key = 0;
+		break;
 	}//switch
 	return key;
 }
@@ -838,10 +858,12 @@ char TheSnakesGame::BeginScreenSwitch() {
 			resetSize();
 			resetPosAndDir();
 			printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
+			rep->saveState(board);
 			key = 1;
 			break;
 		case(9) :
 			//Exit game
+			gotoxy(0, 3);
 			key = ESC;
 			break;
 		}

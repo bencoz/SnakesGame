@@ -43,11 +43,25 @@ void Replay::PrintChanges(Change ch) {
 }
 
 void Replay::startReplay(){
+	gotoxy(0, 2);
+	setTextColor(LIGHTRED);
+	cout << "REPLAY";
+	setTextColor(WHITE);
 	for (int i = 4; i < 24; i++) {
 		for (int j = 0; j < 80; j++) {
 			gotoxy(j, i);
 			cout << startBoard[i][j];
 		}
 	}
+
 	for_each(changes.begin(), changes.end(), [this](Change& ch){Replay::PrintChanges(ch); });
+}
+
+void Replay::waitForReturn(){
+	gotoxy(0, 2);
+	setTextColor(LIGHTRED);
+	cout << "Replay has ended !!";// - Click Any Key To Resume";
+	system("Pause");
+	gotoxy(0, 2);
+	cout << "                                                     ";
 }

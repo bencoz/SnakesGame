@@ -24,7 +24,7 @@ class TheSnakesGame {
 	Bullet **stack;
 	randNum** randNumbers;
 	BasicOBJ **creatures;
-	int gameStackLogSize = 0, gameStackPhSize = 1, difficulty, missPos, missStackLogSize = 0, missStackPhSize = 1;
+	int gameStackLogSize = 0, gameStackPhSize = 1, difficulty, missPos=0, missStackLogSize = 0, missStackPhSize = 1;
 	static int randNumSize;
 	char board[ROWS][COLS + 1];	// this is the actual board we play on, i.e. changes on board are done here
 	static unsigned int clock;
@@ -76,7 +76,7 @@ public:
 	bool checkShootOnBoard(Point p);
 	bool checkNumEaterOnBoard(Point p);
 	void setBulletHit(Point p,int flag =0);
-	void setCreatureHit(Point p);
+	bool setCreatureHit(Point p);
 	void destroyHitBullets();
 	void destroyHitCreatures();
 	void reviveCreatures();
@@ -92,6 +92,8 @@ public:
 	void readingMissions(); 
 	void missionCreator(ifstream& file, char identifer,int pos);
 	void chooseDifficulty();
+	void createSnakes();
+	void killSnakes();
 };
 
 template<class T>

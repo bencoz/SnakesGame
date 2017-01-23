@@ -14,7 +14,7 @@ class Snake : public BasicOBJ {
 	bool freeze = false;
 public:
 	Snake(int size, const Point& p, Color c, int dir, char sign) : BasicOBJ(size, p, c, dir, sign) {}//c'tor
-	~Snake(){} //d'tor
+	//~Snake(){} //d'tor
 	Snake(const Snake& s); //copy c'tor
 	virtual randNum* move();
 	void setArrowKeys(const char* keys);
