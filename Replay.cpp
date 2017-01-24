@@ -60,7 +60,7 @@ void Replay::startReplay(){
 void Replay::waitForReturn(){
 	gotoxy(0, 2);
 	setTextColor(LIGHTRED);
-	cout << "Replay has ended !!";// - Click Any Key To Resume";
+	cout << "Replay has ended !! - ";// - Click Any Key To Resume";
 	system("Pause");
 	gotoxy(0, 2);
 	cout << "                                                     ";
