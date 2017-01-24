@@ -10,6 +10,7 @@ unsigned int TheSnakesGame::clock;
 TheSnakesGame::TheSnakesGame() //c'tor
 {
 	snakes = new Snake*[2];
+	snakes[0] = snakes[1] = nullptr;
 	randNumbers = new randNum*[60];
 	stack = new Bullet*[gameStackPhSize];
 	creatures = new BasicOBJ*[5];
@@ -443,22 +444,27 @@ bool TheSnakesGame::isSpotFree(const Point& p)
 }
 
 void TheSnakesGame::resetSize() {
-	snakes[0]->setSize(3);
-	snakes[1]->setSize(3);
+	if (snakes[0] != nullptr && snakes[1] != nullptr){
+		snakes[0]->setSize(3);
+		snakes[1]->setSize(3);
+	}
 }
 
 void TheSnakesGame::resetPosAndDir() {
-	snakes[0]->setPosition(10, 9);
-	snakes[0]->setDirection(3);
-	snakes[1]->setPosition(70, 9);
-	snakes[1]->setDirection(2);
-	snakes[0]->setGame(this);
-	snakes[1]->setGame(this);
-	snakes[0]->setFreeze(false);
-	snakes[1]->setFreeze(false);
-	snakes[0]->reload(5);
-	snakes[1]->reload(5);
+	if (snakes[0] != nullptr && snakes[1] != nullptr){
+		snakes[0]->setPosition(10, 9);
+		snakes[0]->setDirection(3);
+		snakes[1]->setPosition(70, 9);
+		snakes[1]->setDirection(2);
+		snakes[0]->setGame(this);
+		snakes[1]->setGame(this);
+		snakes[0]->setFreeze(false);
+		snakes[1]->setFreeze(false);
+		snakes[0]->reload(5);
+		snakes[1]->reload(5);
+	}
 }
+
 randNum* TheSnakesGame::isRandNum(const Point& p) {
 	int randNumX, randNumY;
 	bool found = false;
@@ -851,6 +857,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		printRandNumers(randNumbers);
 		rep->startReplay();
+		rep->waitForReturn();
 		key = 0;
 		break;
 	}//switch
@@ -878,7 +885,7 @@ char TheSnakesGame::BeginScreenSwitch() {
 				restartClock();
 				resetSize();
 				resetPosAndDir();
-				printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
+				printRelevant();
 				rep->saveState(board);
 				key = 1;
 			}
