@@ -24,9 +24,9 @@ class TheSnakesGame {
 	Bullet **stack;
 	randNum** randNumbers;
 	BasicOBJ **creatures;
-	int gameStackLogSize = 0, gameStackPhSize = 1, difficulty, missPos=0, missStackLogSize = 0, missStackPhSize = 1;
+	int gameStackLogSize = 0, gameStackPhSize = 1, missPos = 0, missStackLogSize = 0, missStackPhSize = 1;
 	static int randNumSize;
-	char board[ROWS][COLS + 1];	// this is the actual board we play on, i.e. changes on board are done here
+	char difficulty, board[ROWS][COLS + 1];	// this is the actual board we play on, i.e. changes on board are done here
 	static unsigned int clock;
 public:
 	TheSnakesGame();
@@ -89,11 +89,12 @@ public:
 	void realaseSolvers(Point **arr, int size);
 	void killAllOBJS();
 	void killCreatures();
-	void readingMissions(); 
+	bool readingMissions(); 
 	void missionCreator(ifstream& file, char identifer,int pos);
 	void chooseDifficulty();
 	void createSnakes();
 	void killSnakes();
+	void killMissions();
 };
 
 template<class T>

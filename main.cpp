@@ -17,4 +17,5 @@ int main() {
 		game.run();
 		game.killAllOBJS();
 	}
+	game.clearConsoleAndBoard();
 }

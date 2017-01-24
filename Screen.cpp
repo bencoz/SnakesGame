@@ -47,12 +47,11 @@ void Screen::Instructions_Screen() {
 	cout << "To do that you have to collect with your snake the correct numbers that appers on the screen." << endl;
 	cout << "The correct numbers depends on the missions. You have 6 different missions in the game" << endl;
 	cout << "The missions are:" << endl;
-	cout << "1.) Prime_Number: Collect a prime number." << endl;
-	cout << "2.) Divided_By_4: Collect a number that divides by 4." << endl;
-	cout << "3.) Multiple_By_7: Collect a number that is a multiple of 7." << endl;
-	cout << "4.) Square_Of_Z_Num: Collect a number which is a square of an integer." << endl;
-	cout << "5.) Rest_Is_3: Collect a number that when you divide it by 7 the rest is 3." << endl;
-	cout << "6.) Square_Of_13: Collect the square of 13." << endl;
+	cout << "1.) DivideByXnotByY: find anumber that divides by X and not by Y." << endl;
+	cout << "2.) DivideByX: Collect a number that divides by X." << endl;
+	cout << "3.) BiggerThanXsmallerThanY: Collect a number that is smaller than Y and bigger than X." << endl;
+	cout << "4.) SquareOfX: Collect a number which is a square of an integer." << endl;
+	cout << "5.) Equation X*Y-Z: find a number that solves the equation." << endl;
 	cout << "If you collect a correct number, the snake will grow by 1 and the mission will change." << endl;
 	cout << "If you collect a wrong number, the second snake will frow by 1 and the mission will change." << endl;
 	cout << "Good Luck!" << endl;

@@ -14,11 +14,11 @@ class MissionManager {
 	int X, Y;
 public:
 	MissionManager(char *_description,int _X, int _Y);
-	virtual ~MissionManager();
+	virtual ~MissionManager() { delete description; };
 	int getX() { return X; };
 	int getY() { return Y; };
-	void setY(int num) { Y = num; };
 	void setX(int num) { X = num; };
+	void setY(int num) { Y = num; };
 	virtual void printDescript();
 	virtual bool isMissionOK(int num) { return false; };
 };

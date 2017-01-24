@@ -4,7 +4,7 @@ class divideByXnotByY : public MissionManager {
 public:
 	divideByXnotByY(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {
 		while (getX() % getY() == 0)
-			setY(rand() % (_Y - _X) + _X);
+				setY(rand() % (_Y - _X) + _X);
 	};
 	virtual bool isMissionOK(int num);
 };

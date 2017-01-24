@@ -10,7 +10,6 @@ unsigned int TheSnakesGame::clock;
 TheSnakesGame::TheSnakesGame() //c'tor
 {
 	snakes = new Snake*[2];
-	createSnakes();
 	randNumbers = new randNum*[60];
 	stack = new Bullet*[gameStackPhSize];
 	creatures = new BasicOBJ*[5];
@@ -23,27 +22,32 @@ TheSnakesGame::~TheSnakesGame() //d'tor
 {
 	delete[] snakes;
 	delete screen;
-	delete rep;
 	delete[] randNumbers;
 	delete[] stack;
 	delete[] creatures;
+	delete[]missions;
+	delete rep;
+	gotoxy(0, 0);
+}
+
+void TheSnakesGame::createSnakes() {
+	snakes[0] = new Snake(3, { 10, 9 }, Color::LIGHTGREEN, 3, '@');
+	snakes[1] = new Snake(3, { 70, 9 }, Color::LIGHTBLUE, 2, '#');
+}
+
+void TheSnakesGame::killMissions() {
 	for (int i = 0; i < missStackLogSize; i++)
 		delete missions[i];
-	delete[] missions;
 }
 
-void TheSnakesGame::createSnakes(){
-		snakes[0] = new Snake(3, { 10, 9 }, Color::LIGHTGREEN, 3, '@');
-		snakes[1] = new Snake(3, { 70, 9 }, Color::LIGHTBLUE, 2, '#');
-}
-
-void TheSnakesGame::killSnakes(){
-	for (int i = 0; i < 2; ++i)
+void TheSnakesGame::killSnakes() {
+	for (int i = 0; i < 2; i++)
 		delete snakes[i];
 }
 
 void TheSnakesGame::killAllOBJS() {
 	killSnakes();
+	killMissions();
 	deleteAllRandNum(randNumbers);
 	clearBulletsFromGame();
 	killCreatures();
@@ -55,34 +59,49 @@ void TheSnakesGame::killCreatures() {
 }
 
 
-void TheSnakesGame::readingMissions() {
+bool TheSnakesGame::readingMissions() {
 	char identifer, dummy;
 	ifstream read;
 	MissionManager **newmissions;
-	if (difficulty == 1)
+	if (difficulty == '1')
 		read.open("easyMissions.txt");
-	else if (difficulty == 2)
+	else if (difficulty == '2')
 		read.open("mediumMissions.txt");
 	else
 		read.open("hardMissions.txt");
-	while (read.good())
+	if (read.good())
 	{
-		read.get(identifer);
-		read.get(dummy);
-		missionCreator(read, identifer, missStackLogSize);
-		missStackLogSize++;
-		if (missStackLogSize == missStackPhSize)
+		do
 		{
-			missStackPhSize *= 2;
-			newmissions = new MissionManager*[missStackPhSize];
-			for (int i = 0; i < missStackLogSize; i++)
-				newmissions[i] = missions[i];
-			delete missions;
-			missions = newmissions;
-		}
-		read.get(dummy);
+			read.get(identifer);
+			read.get(dummy);
+			missionCreator(read, identifer, missStackLogSize);
+			missStackLogSize++;
+			if (missStackLogSize == missStackPhSize)
+			{
+				missStackPhSize *= 2;
+				newmissions = new MissionManager*[missStackPhSize];
+				for (int i = 0; i < missStackLogSize; i++)
+					newmissions[i] = missions[i];
+				delete missions;
+				missions = newmissions;
+			}
+			read.get(dummy);
+		} while (read.good());
+	}
+	else
+	{
+		clearConsoleAndBoard();
+		gotoxy(0, 3);
+		clearHalfRow();
+		gotoxy(0, 0);
+		cout << "File not found, try a different difficulty level!" << endl;
+		Sleep(2000);
+		read.close();
+		return false;
 	}
 	read.close();
+	return true;
 }
 
 void TheSnakesGame::missionCreator(ifstream& file, char identifer, int pos) {
@@ -635,7 +654,7 @@ void TheSnakesGame::refresh(){
 
 void TheSnakesGame::run()
 {
-	BOOL finishGame = FALSE;
+	BOOL finishGame = false, flag = false;
 	randNum* CurrNum = nullptr;
 	char key = 0;
 	int dir, count = 0, freeze1 = 0, freeze2 = 0;
@@ -711,7 +730,7 @@ void TheSnakesGame::run()
 				if (ch == ESC)
 					key = PauseScreenSwitch();
 				if (key == ESC)
-					finishGame = TRUE;
+					return;
 			}
 			if (!finishGame)
 				refresh();
@@ -736,7 +755,7 @@ void TheSnakesGame::run()
 				if (ch == ESC)
 					key = PauseScreenSwitch();
 				if (key == ESC)
-					finishGame = TRUE;
+					return;
 			}
 			if (!finishGame)
 				refresh();
@@ -826,13 +845,12 @@ char TheSnakesGame::PauseScreenSwitch() {
 		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		key = 1;
 		break;
-	case(7):
+	case(7) :
 		//replay last mission
 		clearConsoleAndBoard();
 		printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
 		printRandNumers(randNumbers);
 		rep->startReplay();
-		rep->waitForReturn();
 		key = 0;
 		break;
 	}//switch
@@ -841,6 +859,7 @@ char TheSnakesGame::PauseScreenSwitch() {
 
 char TheSnakesGame::BeginScreenSwitch() {
 	char key;
+	bool flag = true;
 	do {
 		switch (screen->Begin_Screen()) {
 		case(1) :
@@ -851,19 +870,23 @@ char TheSnakesGame::BeginScreenSwitch() {
 		case(2) :
 			//start new game
 			chooseDifficulty();
-			readingMissions();
-			clearConsoleAndBoard();
-			deleteAllRandNum(randNumbers);
-			restartClock();
-			resetSize();
-			resetPosAndDir();
-			printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
-			rep->saveState(board);
-			key = 1;
+			flag = readingMissions();
+			if (flag)
+			{
+				clearConsoleAndBoard();
+				deleteAllRandNum(randNumbers);
+				restartClock();
+				resetSize();
+				resetPosAndDir();
+				printRelevant(snakes[0]->getSize(), snakes[1]->getSize());
+				rep->saveState(board);
+				key = 1;
+			}
+			else
+				key = 0;
 			break;
 		case(9) :
 			//Exit game
-			gotoxy(0, 3);
 			key = ESC;
 			break;
 		}
@@ -881,9 +904,10 @@ void TheSnakesGame::chooseDifficulty() {
 	cout << "For easy level press 1" << endl;
 	cout << "For medium level press 2" << endl;
 	cout << "For hard level press 3" << endl;
-	do {
-		cin >> difficulty;
-		if (difficulty != 3 && difficulty != 2 && difficulty != 1)
-			cout << "Invalid input, try again please" << endl;
-	} while (difficulty < 1 || difficulty > 3);
+	difficulty = _getch();
+	while (int(difficulty - '0') < 1 || int(difficulty - '0') > 3)
+	{
+		difficulty = _getch();
+		cout << "Invalid input, try again please" << endl;
+	}
 }

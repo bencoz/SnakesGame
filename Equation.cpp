@@ -4,7 +4,7 @@
 Equation::Equation(char *_description, int _X, int _Y) : MissionManager(_description, _X, _Y) {
 	int i;
 	Z = rand() % (_Y - _X) + _X;
-	for (i = 0; i < (int)strlen(_description); i++)
+	for (i = 0; i < strlen(_description); i++)
 		if (_description[i] == '+' || _description[i] == '-' || _description[i] == '*' || _description[i] == '/')
 		{
 			if (op1 == NULL)
