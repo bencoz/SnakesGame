@@ -50,7 +50,7 @@ public:
 	void changeMission();
 	bool isSnake(const Point& p);
 	void clearConsoleAndBoard();
-	void printRelevant(int player1, int player2);
+	void printRelevant(int player1=3, int player2=3);
 	char BeginScreenSwitch();
 	char PauseScreenSwitch();
 	void resetPosAndDir();
